@@ -1,5 +1,7 @@
 """Bot configuration: trigger word and GIF pool."""
 
+from __future__ import annotations
+
 TRIGGER_WORD: str = "idy"
 
 # Replace these with your preferred GIF URLs (Tenor/Giphy auto-embed in Discord)
