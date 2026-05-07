@@ -52,6 +52,11 @@ class IdyBot(discord.Client):
     async def on_ready(self) -> None:
         """Called when the bot has connected and is ready."""
         log.info("Bot ready — logged in as %s (id=%s)", self.user, self.user.id)
+        activity = discord.Activity(
+            type=discord.ActivityType.listening,
+            name="Jomok Hepi",
+        )
+        await self.change_presence(activity=activity)
 
     async def on_message(self, message: discord.Message) -> None:
         """Called for every message the bot can see."""
