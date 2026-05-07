@@ -1,4 +1,4 @@
-"""Discord bot that responds with a GIF when the trigger word is detected."""
+"""Discord bot that responds with a gacha card pull when the trigger word is detected."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from discord import app_commands
 from dotenv import load_dotenv
 import os
 
-from config import GIFS, TRIGGER_WORD
+from config import CARDS, RARITY_CONFIG, TRIGGER_WORD
 
 load_dotenv()
 
@@ -30,8 +30,8 @@ _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
 )
 
 
-def pick_gif() -> str:
-    return random.choice(GIFS)
+def pull_card() -> dict:
+    return random.choice(CARDS)
 
 
 def contains_trigger(text: str) -> bool:
@@ -44,6 +44,18 @@ def _log_trigger(message: discord.Message) -> None:
     user = str(message.author)
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     log.info("Trigger | %s | guild=%s channel=#%s user=%s", ts, guild, channel, user)
+
+
+def _build_card_embed(card: dict) -> discord.Embed:
+    rarity = RARITY_CONFIG[card["rarity"]]
+    embed = discord.Embed(
+        title=rarity["shout"],
+        description=f"{rarity['emoji']} **{card['name']}**\n`{rarity['label']}`",
+        color=rarity["color"],
+    )
+    embed.set_image(url=card["url"])
+    embed.set_footer(text="Idy Gacha System • ketik 'idy' buat pull lagi")
+    return embed
 
 
 class IdyBot(discord.Client):
@@ -105,9 +117,12 @@ class IdyBot(discord.Client):
 
         _log_trigger(message)
 
-        gif_url = pick_gif()
+        card = pull_card()
+        embed = _build_card_embed(card)
+        log.info("Card pulled | %s | rarity=%s", card["name"], card["rarity"])
+
         try:
-            await message.reply(gif_url, mention_author=False)
+            await message.reply(embed=embed, mention_author=False)
         except discord.Forbidden:
             log.warning(
                 "Missing permission to send messages in channel %s", message.channel.id
@@ -124,8 +139,8 @@ def main() -> None:
         )
         sys.exit(1)
 
-    if not GIFS:
-        log.critical("GIFS list in config.py is empty. Add at least one GIF URL.")
+    if not CARDS:
+        log.critical("CARDS list in config.py is empty. Add at least one card.")
         sys.exit(1)
 
     intents = discord.Intents.default()
