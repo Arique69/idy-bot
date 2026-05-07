@@ -1,5 +1,7 @@
 """Discord bot that responds with a GIF when the trigger word is detected."""
 
+from __future__ import annotations
+
 import logging
 import random
 import re
