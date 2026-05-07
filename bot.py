@@ -43,7 +43,7 @@ def _log_trigger(message: discord.Message) -> None:
     """Log a trigger event without recording message content."""
     guild = message.guild.name if message.guild else "DM"
     channel = getattr(message.channel, "name", str(message.channel.id))
-    user = f"{message.author.name}#{message.author.discriminator}"
+    user = str(message.author)
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     log.info("Trigger | %s | guild=%s channel=#%s user=%s", ts, guild, channel, user)
 
