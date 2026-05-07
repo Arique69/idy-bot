@@ -8,7 +8,9 @@ import re
 import sys
 from datetime import datetime, timezone
 
+import aiohttp
 import discord
+from discord import app_commands
 from dotenv import load_dotenv
 import os
 
@@ -23,24 +25,20 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# Pre-compile the trigger pattern: whole-word, case-insensitive
 _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
     rf"\b{re.escape(TRIGGER_WORD)}\b", re.IGNORECASE
 )
 
 
 def pick_gif() -> str:
-    """Return a random GIF URL from the configured pool."""
     return random.choice(GIFS)
 
 
 def contains_trigger(text: str) -> bool:
-    """Return True if *text* contains the trigger word as a whole word."""
     return bool(_TRIGGER_PATTERN.search(text))
 
 
 def _log_trigger(message: discord.Message) -> None:
-    """Log a trigger event without recording message content."""
     guild = message.guild.name if message.guild else "DM"
     channel = getattr(message.channel, "name", str(message.channel.id))
     user = str(message.author)
@@ -49,10 +47,48 @@ def _log_trigger(message: discord.Message) -> None:
 
 
 class IdyBot(discord.Client):
-    """Client subclass that listens for the trigger word and replies with a GIF."""
+    def __init__(self, *, intents: discord.Intents) -> None:
+        super().__init__(intents=intents)
+        self.tree = app_commands.CommandTree(self)
+
+    async def setup_hook(self) -> None:
+        @self.tree.command(name="cuaca", description="Cek cuaca hari ini di Jakarta")
+        async def cuaca(interaction: discord.Interaction) -> None:
+            await interaction.response.defer()
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(
+                        "https://wttr.in/Jakarta?format=j1", timeout=aiohttp.ClientTimeout(total=10)
+                    ) as resp:
+                        data = await resp.json(content_type=None)
+
+                current = data["current_condition"][0]
+                temp = current["temp_C"]
+                feels_like = current["FeelsLikeC"]
+                humidity = current["humidity"]
+                wind = current["windspeedKmph"]
+                desc = current["weatherDesc"][0]["value"]
+
+                embed = discord.Embed(
+                    title="Cuaca Jakarta Hari Ini",
+                    color=discord.Color.blue(),
+                )
+                embed.add_field(name="Kondisi", value=desc, inline=False)
+                embed.add_field(name="Suhu", value=f"{temp}°C (feels like {feels_like}°C)", inline=True)
+                embed.add_field(name="Kelembapan", value=f"{humidity}%", inline=True)
+                embed.add_field(name="Angin", value=f"{wind} km/h", inline=True)
+                embed.set_footer(text="Sumber: wttr.in")
+
+                await interaction.followup.send(embed=embed)
+
+            except Exception as exc:
+                log.error("Error fetching weather: %s", exc)
+                await interaction.followup.send("Gagal ngambil data cuaca, coba lagi nanti.")
+
+        await self.tree.sync()
+        log.info("Slash commands synced.")
 
     async def on_ready(self) -> None:
-        """Called when the bot has connected and is ready."""
         log.info("Bot ready — logged in as %s (id=%s)", self.user, self.user.id)
         activity = discord.Activity(
             type=discord.ActivityType.listening,
@@ -61,8 +97,6 @@ class IdyBot(discord.Client):
         await self.change_presence(activity=activity)
 
     async def on_message(self, message: discord.Message) -> None:
-        """Called for every message the bot can see."""
-        # Ignore all bot messages (prevents feedback loops)
         if message.author.bot:
             return
 
@@ -83,7 +117,6 @@ class IdyBot(discord.Client):
 
 
 def main() -> None:
-    """Entry point: validate config, build intents, and run the bot."""
     token = os.getenv("DISCORD_TOKEN")
     if not token:
         log.critical(
@@ -96,12 +129,12 @@ def main() -> None:
         sys.exit(1)
 
     intents = discord.Intents.default()
-    intents.message_content = True  # Required to read message text
+    intents.message_content = True
 
     client = IdyBot(intents=intents)
 
     try:
-        client.run(token, log_handler=None)  # We manage our own logging
+        client.run(token, log_handler=None)
     except discord.LoginFailure:
         log.critical("Invalid Discord token. Double-check your DISCORD_TOKEN in .env.")
         sys.exit(1)
