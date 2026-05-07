@@ -16,4 +16,9 @@ GIFS: list[str] = [
     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QGyYIduiYf1zUkFHfR/giphy.gif",
     "https://media.giphy.com/media/Ihx6bbytRTEiQ7e4xF/giphy.gif",
     "https://media.giphy.com/media/VwNySHxfzhksbDnR0v/giphy.gif",
+    "https://media.giphy.com/media/gNjSEUHYeGVAiSRwyt/giphy.gif",
+    "https://media.giphy.com/media/jsLf2ALAjO8g7mpmt0/giphy.gif",
+    "https://media.giphy.com/media/5PSwLEcp5qvlFtGasw/giphy.gif",
+    "https://media.giphy.com/media/bTnjjJn4pJLFUa0CLP/giphy.gif",
+    "https://media.giphy.com/media/iiCQrGn7lEiWXF7fxe/giphy.gif",
 ]
