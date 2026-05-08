@@ -36,6 +36,8 @@ _cooldowns: dict[int, float] = {}
 
 RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic"]
 
+GUILD = discord.Object(id=490175609587105802)
+
 
 def pull_card(user_id: int) -> tuple[dict, bool]:
     data = load_data()
@@ -551,8 +553,8 @@ class IdyBot(discord.Client):
                 results.append(app_commands.Choice(name=f"{emoji} {name} (x{cnt})", value=name))
             return results[:25]
 
-        await self.tree.sync()
-        log.info("Slash commands synced.")
+        await self.tree.sync(guild=GUILD)
+        log.info("Slash commands synced to guild %s.", GUILD.id)
 
     async def on_ready(self) -> None:
         log.info("Bot ready — logged in as %s (id=%s)", self.user, self.user.id)
