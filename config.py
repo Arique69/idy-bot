@@ -81,6 +81,21 @@ CARDS: list[dict] = [
         "rarity": "rare",
     },
     {
+        "url": "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTExdG9tNDd2cHVyMmQ3YjY5N3k0YXZ2OWc1MW5rajYzZ3hyM2s0ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3VUZmlLh5uPJRR12a4/giphy.gif",
+        "name": "Pak Cik Peduli?",
+        "rarity": "rare",
+    },
+    {
+        "url": "https://images-ext-1.discordapp.net/external/cOeMKSH7nlCqmP99kNBVnTHa72ef4Vdo8iuV4U4tLT0/https/media.tenor.com/tCQlayB_ymIAAAPo/jomok.mp4",
+        "name": "Sengaja Ya Buat Aku Marah",
+        "rarity": "rare",
+    },
+    {
+        "url": "https://images-ext-1.discordapp.net/external/as8foZx4Z6FtipeEYJtFGyFmzq7Z_0yAX48_JvO2BTA/https/media.tenor.com/4xPWuHFNtCMAAAPo/brandon-brandon-curington.mp4",
+        "name": "Rusdi Hump Day",
+        "rarity": "rare",
+    },
+    {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9oryRGyTdzzFEBUgcb/giphy.gif",
         "name": "Amba Menangis",
         "rarity": "rare",
@@ -117,6 +132,11 @@ CARDS: list[dict] = [
         "rarity": "epic",
     },
     {
+        "url": "https://images-ext-1.discordapp.net/external/Xf_sVrBY9kPLoAIbnoPkmMJDueNS-EaCEwV0PqCYCOo/https/media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGR3dmJ5MWVjdnVjaWU4NDM0Zm5sbDM3MGZsd202dmkxZ3JlZ285MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/edxiHsM9ik32DW9rWy/giphy.gif?width=312&height=300",
+        "name": "Owo Swag",
+        "rarity": "epic",
+    },
+    {
         "url": "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWtweWxrZ200Y3ljM3Rnc3E4enBjbmVmYTZrdW5qcXU3cHoxczBpdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/zJi5F4LxaFEGBGlb9h/giphy.gif",
         "name": "Menggugah Selera",
         "rarity": "epic",
@@ -138,6 +158,11 @@ CARDS: list[dict] = [
     },
     # --- Legendary 🟡 ---
     {
+        "url": "https://images-ext-1.discordapp.net/external/FXWZTXH3m3OQlTFnmh5CJPuFaZ4SYoahZe5_AfPDe9w/https/media.tenor.com/JhBmmEylv1AAAAPo/kiss-a-homie-kiss.mp4",
+        "name": "Kissu",
+        "rarity": "legendary",
+    },
+    {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnYwMjQxN2RpYm1sZ3Z3OGRlNzV4dDAzNG9sdmJ5YnpkdTF3azFpZiZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/hxZMzujlY2Jv5sD36g/giphy.gif",
         "name": "Solo Swag",
         "rarity": "legendary",
@@ -152,7 +177,18 @@ CARDS: list[dict] = [
         "name": "Rusdi Informasi Palsu",
         "rarity": "legendary",
     },
+    # --- Common ⚪ (extra) ---
+    {
+        "url": "https://images-ext-1.discordapp.net/external/qF6Mfi41g150GBrRKGnak8v7DiWU5f0TWPlwz7ut8xo/https/media.tenor.com/o1sTN0QWCSAAAAPo/jomok.mp4",
+        "name": "Rusdi Alamak",
+        "rarity": "common",
+    },
     # --- Mythic 🔴 ---
+    {
+        "url": "https://media.discordapp.net/attachments/980988443708522518/1447968945771646977/Messenger_creation_3A6D65A9-00EC-44BB-9E93-00112779E044.gif?ex=69ff4eaa&is=69fdfd2a&hm=8474396943f02e08c4815948390ead0e73a56aef68c3c065b1db20ef3539402a&=",
+        "name": "Geol-geol",
+        "rarity": "mythic",
+    },
     {
         "url": "https://cdn.discordapp.com/attachments/1224139598255624252/1466400312376950926/RGB.gif?ex=69fe76f6&is=69fd2576&hm=77494915c3546f97f96c0f56c0f15c9a7bf94b92563a1c09cdc0343fab4c1c46",
         "name": "Linggis RGB",
