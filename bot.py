@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 
 import aiohttp
 import discord
+import yfinance as yf
 from discord import app_commands
 from dotenv import load_dotenv
 import os
@@ -203,6 +204,56 @@ class IdyBot(discord.Client):
                     )
 
             await interaction.response.send_message(embed=embed)
+
+        @self.tree.command(name="saham", description="Cek harga saham (contoh: BBCA, TLKM, GOTO)")
+        @app_commands.describe(ticker="Kode saham IDX (tanpa .JK) atau US (AAPL, TSLA, dll)")
+        async def saham(interaction: discord.Interaction, ticker: str) -> None:
+            await interaction.response.defer()
+            try:
+                ticker_upper = ticker.upper().strip()
+                # Coba IDX dulu, fallback ke US kalau ga ketemu
+                symbol = f"{ticker_upper}.JK"
+                stock = yf.Ticker(symbol)
+                info = stock.info
+
+                # Kalau ga ada data, coba tanpa .JK (US market)
+                if not info.get("regularMarketPrice") and not info.get("currentPrice"):
+                    symbol = ticker_upper
+                    stock = yf.Ticker(symbol)
+                    info = stock.info
+
+                price = info.get("currentPrice") or info.get("regularMarketPrice")
+                if not price:
+                    await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
+                    return
+
+                name = info.get("longName") or info.get("shortName") or symbol
+                currency = info.get("currency", "")
+                prev_close = info.get("previousClose", 0)
+                change = price - prev_close
+                change_pct = (change / prev_close * 100) if prev_close else 0
+                high = info.get("dayHigh", "-")
+                low = info.get("dayLow", "-")
+                volume = info.get("volume") or info.get("regularMarketVolume")
+
+                arrow = "🟢 ▲" if change >= 0 else "🔴 ▼"
+                sign = "+" if change >= 0 else ""
+                color = 0x2ecc71 if change >= 0 else 0xe74c3c
+
+                embed = discord.Embed(title=f"{name} ({symbol})", color=color)
+                embed.add_field(name="Harga", value=f"**{currency} {price:,.2f}**", inline=True)
+                embed.add_field(name="Perubahan", value=f"{arrow} {sign}{change:,.2f} ({sign}{change_pct:.2f}%)", inline=True)
+                embed.add_field(name="​", value="​", inline=True)
+                embed.add_field(name="Tertinggi Hari Ini", value=f"{currency} {high:,.2f}" if isinstance(high, float) else "-", inline=True)
+                embed.add_field(name="Terendah Hari Ini", value=f"{currency} {low:,.2f}" if isinstance(low, float) else "-", inline=True)
+                embed.add_field(name="Volume", value=f"{volume:,}" if volume else "-", inline=True)
+                embed.set_footer(text="Sumber: Yahoo Finance • Data bisa delay 15 menit")
+
+                await interaction.followup.send(embed=embed)
+
+            except Exception as exc:
+                log.error("Error fetching stock %s: %s", ticker, exc)
+                await interaction.followup.send("Gagal ngambil data saham, coba lagi nanti.")
 
         await self.tree.sync()
         log.info("Slash commands synced.")

@@ -150,7 +150,12 @@ CARDS: list[dict] = [
     # --- Mythic 🔴 ---
     {
         "url": "https://cdn.discordapp.com/attachments/1224139598255624252/1466400312376950926/RGB.gif?ex=69fe76f6&is=69fd2576&hm=77494915c3546f97f96c0f56c0f15c9a7bf94b92563a1c09cdc0343fab4c1c46",
-        "name": "RGB Jomok",
+        "name": "Linggis RGB",
+        "rarity": "mythic",
+    },
+    {
+        "url": "https://media.discordapp.net/attachments/1131416137259819088/1502189723630698536/GettyImages-1340129852.webp?ex=69feceb3&is=69fd7d33&hm=33dfcedd5b106e70de81d6f98224b61d4220365bf5fa01a3721f23e4d844d4a9&=&format=webp&width=519&height=779",
+        "name": "Gold Lil Nas",
         "rarity": "mythic",
     },
 ]
