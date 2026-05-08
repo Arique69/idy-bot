@@ -98,6 +98,65 @@ def _log_trigger(message: discord.Message) -> None:
     log.info("Trigger | %s | guild=%s channel=#%s user=%s", ts, guild, channel, user)
 
 
+class TradeView(discord.ui.View):
+    def __init__(self, challenger: discord.Member, target: discord.Member, card_a: str, card_b: str) -> None:
+        super().__init__(timeout=60)
+        self.challenger = challenger
+        self.target = target
+        self.card_a = card_a
+        self.card_b = card_b
+        self.message: discord.Message | None = None
+
+    async def _finish(self, interaction: discord.Interaction, content: str) -> None:
+        for item in self.children:
+            item.disabled = True  # type: ignore
+        await interaction.response.edit_message(content=content, view=self)
+        self.stop()
+
+    @discord.ui.button(label="✅ Accept", style=discord.ButtonStyle.green)
+    async def accept(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if interaction.user.id != self.target.id:
+            await interaction.response.send_message("Bukan kamu yang diajak trade!", ephemeral=True)
+            return
+
+        data = load_data()
+        user_a = get_user(data, str(self.challenger.id))
+        user_b = get_user(data, str(self.target.id))
+
+        if self.card_a not in user_a["collection"]:
+            await self._finish(interaction, f"❌ Trade gagal — **{self.challenger.display_name}** udah ga punya **{self.card_a}**.")
+            return
+        if self.card_b not in user_b["collection"]:
+            await self._finish(interaction, f"❌ Trade gagal — **{self.target.display_name}** udah ga punya **{self.card_b}**.")
+            return
+
+        user_a["collection"].remove(self.card_a)
+        user_b["collection"].remove(self.card_b)
+        if self.card_b not in user_a["collection"]:
+            user_a["collection"].append(self.card_b)
+        if self.card_a not in user_b["collection"]:
+            user_b["collection"].append(self.card_a)
+
+        save_data(data)
+        await self._finish(
+            interaction,
+            f"✅ Trade berhasil!\n**{self.challenger.display_name}** dapat **{self.card_b}**\n**{self.target.display_name}** dapat **{self.card_a}**",
+        )
+
+    @discord.ui.button(label="❌ Decline", style=discord.ButtonStyle.red)
+    async def decline(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if interaction.user.id != self.target.id:
+            await interaction.response.send_message("Bukan kamu yang diajak trade!", ephemeral=True)
+            return
+        await self._finish(interaction, f"❌ Trade ditolak oleh **{self.target.display_name}**.")
+
+    async def on_timeout(self) -> None:
+        for item in self.children:
+            item.disabled = True  # type: ignore
+        if self.message:
+            await self.message.edit(content="⏰ Trade expired.", view=self)
+
+
 def _build_card_embed(card: dict, is_pity: bool = False) -> discord.Embed:
     rarity = RARITY_CONFIG[card["rarity"]]
     embed = discord.Embed(
@@ -354,6 +413,83 @@ class IdyBot(discord.Client):
                 if current.lower() in c["name"].lower()
             ]
             return matches[:25]
+
+        @self.tree.command(name="trade", description="Tawarkan trade kartu ke user lain")
+        @app_commands.describe(
+            lawan="User yang mau diajak trade",
+            kartu_kamu="Kartu kamu yang mau ditukar",
+            kartu_dia="Kartu dia yang kamu mau",
+        )
+        async def trade(interaction: discord.Interaction, lawan: discord.Member, kartu_kamu: str, kartu_dia: str) -> None:
+            if lawan.bot or lawan.id == interaction.user.id:
+                await interaction.response.send_message("Ga bisa trade sama bot atau diri sendiri!", ephemeral=True)
+                return
+
+            data = load_data()
+            user_a = get_user(data, str(interaction.user.id))
+            user_b = get_user(data, str(lawan.id))
+
+            if kartu_kamu not in user_a["collection"]:
+                await interaction.response.send_message(f"Kamu ga punya kartu **{kartu_kamu}**!", ephemeral=True)
+                return
+            if kartu_dia not in user_b["collection"]:
+                await interaction.response.send_message(f"**{lawan.display_name}** ga punya kartu **{kartu_dia}**!", ephemeral=True)
+                return
+
+            card_a = next((c for c in CARDS if c["name"] == kartu_kamu), None)
+            card_b = next((c for c in CARDS if c["name"] == kartu_dia), None)
+            cfg_a = RARITY_CONFIG[card_a["rarity"]] if card_a else {}
+            cfg_b = RARITY_CONFIG[card_b["rarity"]] if card_b else {}
+
+            view = TradeView(interaction.user, lawan, kartu_kamu, kartu_dia)
+            embed = discord.Embed(
+                title="🔄 Tawaran Trade",
+                description=f"{lawan.mention}, **{interaction.user.display_name}** ngajak trade nih!",
+                color=0x3498db,
+            )
+            embed.add_field(
+                name=f"{interaction.user.display_name} kasih",
+                value=f"{cfg_a.get('emoji', '')} **{kartu_kamu}**\n`{cfg_a.get('label', '')}`",
+                inline=True,
+            )
+            embed.add_field(name="⇄", value="", inline=True)
+            embed.add_field(
+                name=f"{lawan.display_name} kasih",
+                value=f"{cfg_b.get('emoji', '')} **{kartu_dia}**\n`{cfg_b.get('label', '')}`",
+                inline=True,
+            )
+            embed.set_footer(text="Trade expire dalam 60 detik")
+
+            await interaction.response.send_message(embed=embed, view=view)
+            view.message = await interaction.original_response()
+
+        @trade.autocomplete("kartu_kamu")
+        async def trade_kartu_kamu_ac(interaction: discord.Interaction, current: str):
+            data = load_data()
+            user = get_user(data, str(interaction.user.id))
+            return [
+                app_commands.Choice(name=name, value=name)
+                for name in user["collection"]
+                if current.lower() in name.lower()
+            ][:25]
+
+        @trade.autocomplete("kartu_dia")
+        async def trade_kartu_dia_ac(interaction: discord.Interaction, current: str):
+            target = getattr(interaction.namespace, "lawan", None)
+            if target:
+                data = load_data()
+                user = get_user(data, str(target.id))
+                if user["collection"]:
+                    return [
+                        app_commands.Choice(name=name, value=name)
+                        for name in user["collection"]
+                        if current.lower() in name.lower()
+                    ][:25]
+            return [
+                app_commands.Choice(name=c["name"], value=c["name"])
+                for c in CARDS
+                if current.lower() in c["name"].lower()
+            ][:25]
 
         await self.tree.sync()
         log.info("Slash commands synced.")
