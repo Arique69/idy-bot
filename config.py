@@ -74,6 +74,11 @@ CARDS: list[dict] = [
         "name": "Admin Telah Tiba",
         "rarity": "common",
     },
+    {
+        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHN2MHZ4OXpsN3FwdzY2OG94cDdvd216NHJ0emduc3d3bGdoZGxndiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/OUEkBHoiAzcAPDUHo9/giphy.gif",
+        "name": "Rusdi Kapan yh",
+        "rarity": "common",
+    },
     # --- Rare 🔵 ---
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xz0qNZfJM3XeKznwVq/giphy.gif",
@@ -86,12 +91,12 @@ CARDS: list[dict] = [
         "rarity": "rare",
     },
     {
-        "url": "https://images-ext-1.discordapp.net/external/cOeMKSH7nlCqmP99kNBVnTHa72ef4Vdo8iuV4U4tLT0/https/media.tenor.com/tCQlayB_ymIAAAPo/jomok.mp4",
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502360650939236442/Fr8xtY1aIAEactb.png?ex=69ff6de3&is=69fe1c63&hm=464fc3298d0c8e313e5a231945dd7f15f51382c1ac2f84b95ea9e55dc06f2adf&=&format=webp&quality=lossless",
         "name": "Sengaja Ya Buat Aku Marah",
         "rarity": "rare",
     },
     {
-        "url": "https://images-ext-1.discordapp.net/external/as8foZx4Z6FtipeEYJtFGyFmzq7Z_0yAX48_JvO2BTA/https/media.tenor.com/4xPWuHFNtCMAAAPo/brandon-brandon-curington.mp4",
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502362384562393138/1e9cc19e8ab2ae01baa1c70ca3a0012d.png?ex=69ff6f81&is=69fe1e01&hm=6352cee0657bb0cf3ecc69be37209f218534f9bf782d0489fea5b3b05060cd36&=&format=webp&quality=lossless",
         "name": "Rusdi Hump Day",
         "rarity": "rare",
     },
@@ -132,7 +137,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
     },
     {
-        "url": "https://images-ext-1.discordapp.net/external/Xf_sVrBY9kPLoAIbnoPkmMJDueNS-EaCEwV0PqCYCOo/https/media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGR3dmJ5MWVjdnVjaWU4NDM0Zm5sbDM3MGZsd202dmkxZ3JlZ285MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/edxiHsM9ik32DW9rWy/giphy.gif?width=312&height=300",
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502363686222696498/images.png?ex=69ff70b7&is=69fe1f37&hm=b3aadce74b720f64f3a1df54d1e085a3cc9d811961b93b90b1f23e39aba2d00b&=&format=webp&quality=lossless",
         "name": "Owo Swag",
         "rarity": "epic",
     },
@@ -179,7 +184,7 @@ CARDS: list[dict] = [
     },
     # --- Common ⚪ (extra) ---
     {
-        "url": "https://images-ext-1.discordapp.net/external/qF6Mfi41g150GBrRKGnak8v7DiWU5f0TWPlwz7ut8xo/https/media.tenor.com/o1sTN0QWCSAAAAPo/jomok.mp4",
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502362384562393138/1e9cc19e8ab2ae01baa1c70ca3a0012d.png?ex=69ff6f81&is=69fe1e01&hm=6352cee0657bb0cf3ecc69be37209f218534f9bf782d0489fea5b3b05060cd36&=&format=webp&quality=lossless",
         "name": "Rusdi Alamak",
         "rarity": "common",
     },
@@ -190,7 +195,7 @@ CARDS: list[dict] = [
         "rarity": "mythic",
     },
     {
-        "url": "https://cdn.discordapp.com/attachments/1224139598255624252/1466400312376950926/RGB.gif?ex=69fe76f6&is=69fd2576&hm=77494915c3546f97f96c0f56c0f15c9a7bf94b92563a1c09cdc0343fab4c1c46",
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502362704214622340/RGB.gif?ex=69ff6fcd&is=69fe1e4d&hm=94c5b515e756c016de41b4fd017d5c49b3347fb3dc275f6012937b7abb13a8b9&=",
         "name": "Linggis RGB",
         "rarity": "mythic",
     },
