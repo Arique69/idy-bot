@@ -166,6 +166,11 @@ CARDS: list[dict] = [
         "name": "Tertawa Tapi Teluka",
         "rarity": "epic",
     },
+    {
+        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTIzd3lxbzUyejZvOGllb2Rwa3diaDQ2YWVtN28zaWUxYnN0amQzYiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/4Ri3wZqFjICSMS75J0/giphy.gif",
+        "name": "Terompet Pemanggil Pasukan",
+        "rarity": "epic",
+    },
     # --- Legendary 🟡 ---
     {
         "url": "https://media.discordapp.net/attachments/640554506525868082/1502367899938066503/tirai_emas.gif?ex=69ff74a3&is=69fe2323&hm=0c00be9160f114e8b6496044afa7c09de292045f834c9625e88bf14c6d8a42cb&=",
