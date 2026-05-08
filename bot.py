@@ -211,30 +211,40 @@ class IdyBot(discord.Client):
             try:
                 ticker_upper = ticker.upper().strip()
                 # Coba IDX dulu, fallback ke US kalau ga ketemu
-                for symbol in [f"{ticker_upper}.JK", ticker_upper]:
-                    url = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}"
-                    headers = {"User-Agent": "Mozilla/5.0"}
-                    async with aiohttp.ClientSession() as session:
-                        async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Accept": "application/json",
+                    "Accept-Language": "en-US,en;q=0.9",
+                }
+
+                q = None
+                async with aiohttp.ClientSession(headers=headers) as session:
+                    for symbol in [f"{ticker_upper}.JK", ticker_upper]:
+                        url = f"https://query2.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=1d"
+                        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
                             data = await resp.json(content_type=None)
 
-                    result = data.get("quoteResponse", {}).get("result", [])
-                    if result:
-                        q = result[0]
-                        break
-                else:
+                        chart = data.get("chart", {})
+                        if chart.get("error") or not chart.get("result"):
+                            continue
+
+                        meta = chart["result"][0]["meta"]
+                        price = meta.get("regularMarketPrice")
+                        if price:
+                            q = meta
+                            q["_symbol"] = symbol
+                            break
+
+                if not q:
                     await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
                     return
 
-                price = q.get("regularMarketPrice")
-                if not price:
-                    await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
-                    return
-
+                symbol = q["_symbol"]
                 name = q.get("longName") or q.get("shortName") or symbol
                 currency = q.get("currency", "")
-                change = q.get("regularMarketChange", 0)
-                change_pct = q.get("regularMarketChangePercent", 0)
+                prev_close = q.get("previousClose") or q.get("chartPreviousClose", 0)
+                change = price - prev_close if prev_close else 0
+                change_pct = (change / prev_close * 100) if prev_close else 0
                 high = q.get("regularMarketDayHigh")
                 low = q.get("regularMarketDayLow")
                 volume = q.get("regularMarketVolume")
