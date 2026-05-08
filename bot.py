@@ -329,17 +329,8 @@ class IdyBot(discord.Client):
 
             await interaction.response.send_message(embed=embed)
 
-        async def kartu_autocomplete(interaction: discord.Interaction, current: str):
-            matches = [
-                app_commands.Choice(name=c["name"], value=c["name"])
-                for c in CARDS
-                if current.lower() in c["name"].lower()
-            ]
-            return matches[:25]
-
         @self.tree.command(name="kartu", description="Preview kartu tertentu")
         @app_commands.describe(nama="Nama kartu yang mau dilihat")
-        @app_commands.autocomplete(nama=kartu_autocomplete)
         async def kartu(interaction: discord.Interaction, nama: str) -> None:
             card = next((c for c in CARDS if c["name"].lower() == nama.lower()), None)
             if not card:
@@ -354,6 +345,15 @@ class IdyBot(discord.Client):
             )
             embed.set_image(url=card["url"])
             await interaction.response.send_message(embed=embed)
+
+        @kartu.autocomplete("nama")
+        async def kartu_autocomplete(interaction: discord.Interaction, current: str):
+            matches = [
+                app_commands.Choice(name=c["name"], value=c["name"])
+                for c in CARDS
+                if current.lower() in c["name"].lower()
+            ]
+            return matches[:25]
 
         await self.tree.sync()
         log.info("Slash commands synced.")
