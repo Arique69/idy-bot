@@ -6,6 +6,7 @@ import logging
 import random
 import re
 import sys
+import time
 from datetime import datetime, timezone
 
 import aiohttp
@@ -29,6 +30,11 @@ log = logging.getLogger(__name__)
 _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
     rf"\b{re.escape(TRIGGER_WORD)}\b", re.IGNORECASE
 )
+
+COOLDOWN_SECONDS = 30
+_cooldowns: dict[int, float] = {}
+
+RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic"]
 
 
 def pull_card(user_id: int) -> tuple[dict, bool]:
@@ -67,6 +73,17 @@ def pull_card(user_id: int) -> tuple[dict, bool]:
 
     save_data(data)
     return card, is_pity
+
+
+def pull_card_simple() -> dict:
+    """Pull a card without affecting user data (for duel)."""
+    rarities = list(RARITY_CONFIG.keys())
+    weights = [RARITY_CONFIG[r]["weight"] for r in rarities]
+    chosen_rarity = random.choices(rarities, weights=weights, k=1)[0]
+    pool = [c for c in CARDS if c["rarity"] == chosen_rarity]
+    if not pool:
+        pool = CARDS
+    return random.choice(pool)
 
 
 def contains_trigger(text: str) -> bool:
@@ -210,7 +227,6 @@ class IdyBot(discord.Client):
             await interaction.response.defer()
             try:
                 ticker_upper = ticker.upper().strip()
-                # Coba IDX dulu, fallback ke US kalau ga ketemu
                 headers = {
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                     "Accept": "application/json",
@@ -268,6 +284,77 @@ class IdyBot(discord.Client):
                 log.error("Error fetching stock %s: %s", ticker, exc)
                 await interaction.followup.send("Gagal ngambil data saham, coba lagi nanti.")
 
+        @self.tree.command(name="duel", description="Adu kartu sama user lain")
+        @app_commands.describe(lawan="User yang mau diajak duel")
+        async def duel(interaction: discord.Interaction, lawan: discord.Member) -> None:
+            if lawan.bot:
+                await interaction.response.send_message("Ga bisa duel sama bot!", ephemeral=True)
+                return
+            if lawan.id == interaction.user.id:
+                await interaction.response.send_message("Ga bisa duel sama diri sendiri!", ephemeral=True)
+                return
+
+            card_a = pull_card_simple()
+            card_b = pull_card_simple()
+
+            rank_a = RARITY_ORDER.index(card_a["rarity"])
+            rank_b = RARITY_ORDER.index(card_b["rarity"])
+
+            cfg_a = RARITY_CONFIG[card_a["rarity"]]
+            cfg_b = RARITY_CONFIG[card_b["rarity"]]
+
+            if rank_a > rank_b:
+                result = f"🏆 **{interaction.user.display_name}** menang!"
+                color = 0x2ecc71
+            elif rank_b > rank_a:
+                result = f"🏆 **{lawan.display_name}** menang!"
+                color = 0xe74c3c
+            else:
+                result = "🤝 **Seri!**"
+                color = 0x95a5a6
+
+            embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
+            embed.add_field(
+                name=f"{interaction.user.display_name}",
+                value=f"{cfg_a['emoji']} **{card_a['name']}**\n`{cfg_a['label']}`",
+                inline=True,
+            )
+            embed.add_field(name="VS", value="⚔️", inline=True)
+            embed.add_field(
+                name=f"{lawan.display_name}",
+                value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`",
+                inline=True,
+            )
+            embed.set_footer(text="Kartu duel tidak masuk koleksi")
+
+            await interaction.response.send_message(embed=embed)
+
+        async def kartu_autocomplete(interaction: discord.Interaction, current: str):
+            matches = [
+                app_commands.Choice(name=c["name"], value=c["name"])
+                for c in CARDS
+                if current.lower() in c["name"].lower()
+            ]
+            return matches[:25]
+
+        @self.tree.command(name="kartu", description="Preview kartu tertentu")
+        @app_commands.describe(nama="Nama kartu yang mau dilihat")
+        @app_commands.autocomplete(nama=kartu_autocomplete)
+        async def kartu(interaction: discord.Interaction, nama: str) -> None:
+            card = next((c for c in CARDS if c["name"].lower() == nama.lower()), None)
+            if not card:
+                await interaction.response.send_message(f"Kartu `{nama}` tidak ditemukan.", ephemeral=True)
+                return
+
+            rarity = RARITY_CONFIG[card["rarity"]]
+            embed = discord.Embed(
+                title=card["name"],
+                description=f"{rarity['emoji']} `{rarity['label']}`",
+                color=rarity["color"],
+            )
+            embed.set_image(url=card["url"])
+            await interaction.response.send_message(embed=embed)
+
         await self.tree.sync()
         log.info("Slash commands synced.")
 
@@ -286,6 +373,18 @@ class IdyBot(discord.Client):
         if not contains_trigger(message.content):
             return
 
+        now = time.time()
+        last = _cooldowns.get(message.author.id, 0)
+        remaining = COOLDOWN_SECONDS - (now - last)
+        if remaining > 0:
+            await message.reply(
+                f"⏳ Cooldown! Tunggu **{remaining:.0f} detik** lagi.",
+                mention_author=False,
+                delete_after=5,
+            )
+            return
+
+        _cooldowns[message.author.id] = now
         _log_trigger(message)
 
         card, is_pity = pull_card(message.author.id)
