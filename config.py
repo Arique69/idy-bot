@@ -101,7 +101,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
     },
     {
-        "url": "https://tenor.com/bUesL.gif",
+        "url": "https://tenor.com/view/brandon-barber-thug-thug-hunter-thug-shaker-barber-gif-25755953",
         "name": "Rusdi Hump Day",
         "rarity": "rare",
     },
