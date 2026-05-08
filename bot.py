@@ -185,17 +185,19 @@ class IdyBot(discord.Client):
                 if card:
                     by_rarity.setdefault(card["rarity"], []).append(card_name)
 
+            total_cards = len(CARDS)
             embed = discord.Embed(
                 title=f"Koleksi {interaction.user.display_name}",
-                description=f"Total: **{len(collection)}** kartu unik",
+                description=f"Total: **{len(collection)}/{total_cards}** kartu unik",
                 color=0x9b59b6,
             )
             for rarity in ["mythic", "legendary", "epic", "rare", "common"]:
                 if rarity in by_rarity:
                     cfg = RARITY_CONFIG[rarity]
+                    total_rarity = sum(1 for c in CARDS if c["rarity"] == rarity)
                     cards_str = "\n".join(f"• {name}" for name in by_rarity[rarity])
                     embed.add_field(
-                        name=f"{cfg['emoji']} {cfg['label']} ({len(by_rarity[rarity])})",
+                        name=f"{cfg['emoji']} {cfg['label']} ({len(by_rarity[rarity])}/{total_rarity})",
                         value=cards_str,
                         inline=False,
                     )
