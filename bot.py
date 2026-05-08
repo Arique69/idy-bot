@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 import os
 
 from config import CARDS, RARITY_CONFIG, TRIGGER_WORD
+from data import load_data, save_data, get_user
 
 load_dotenv()
 
@@ -30,14 +31,42 @@ _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
 )
 
 
-def pull_card() -> dict:
-    rarities = list(RARITY_CONFIG.keys())
-    weights = [RARITY_CONFIG[r]["weight"] for r in rarities]
-    chosen_rarity = random.choices(rarities, weights=weights, k=1)[0]
+def pull_card(user_id: int) -> tuple[dict, bool]:
+    data = load_data()
+    user = get_user(data, str(user_id))
+
+    streak = user["common_streak"]
+    is_pity = streak >= 3
+
+    if is_pity:
+        pity_rarities = [r for r in RARITY_CONFIG if r != "common" and any(c["rarity"] == r for c in CARDS)]
+        weights = [RARITY_CONFIG[r]["weight"] for r in pity_rarities]
+        chosen_rarity = random.choices(pity_rarities, weights=weights, k=1)[0]
+        user["common_streak"] = 0
+    else:
+        rarities = list(RARITY_CONFIG.keys())
+        weights = [RARITY_CONFIG[r]["weight"] for r in rarities]
+        chosen_rarity = random.choices(rarities, weights=weights, k=1)[0]
+        if chosen_rarity == "common":
+            user["common_streak"] = streak + 1
+        else:
+            user["common_streak"] = 0
+
     pool = [c for c in CARDS if c["rarity"] == chosen_rarity]
     if not pool:
         pool = CARDS
-    return random.choice(pool)
+    card = random.choice(pool)
+
+    if card["name"] not in user["collection"]:
+        user["collection"].append(card["name"])
+
+    if chosen_rarity == "legendary":
+        user["legendary_count"] += 1
+    elif chosen_rarity == "mythic":
+        user["mythic_count"] += 1
+
+    save_data(data)
+    return card, is_pity
 
 
 def contains_trigger(text: str) -> bool:
@@ -52,7 +81,7 @@ def _log_trigger(message: discord.Message) -> None:
     log.info("Trigger | %s | guild=%s channel=#%s user=%s", ts, guild, channel, user)
 
 
-def _build_card_embed(card: dict) -> discord.Embed:
+def _build_card_embed(card: dict, is_pity: bool = False) -> discord.Embed:
     rarity = RARITY_CONFIG[card["rarity"]]
     embed = discord.Embed(
         title=rarity["shout"],
@@ -60,7 +89,10 @@ def _build_card_embed(card: dict) -> discord.Embed:
         color=rarity["color"],
     )
     embed.set_image(url=card["url"])
-    embed.set_footer(text="Idy Gacha System • ketik 'idy' buat pull lagi")
+    footer = "Idy Gacha System • ketik 'idy' buat pull lagi"
+    if is_pity:
+        footer = "🍀 Pity activated! • " + footer
+    embed.set_footer(text=footer)
     return embed
 
 
@@ -103,6 +135,73 @@ class IdyBot(discord.Client):
                 log.error("Error fetching weather: %s", exc)
                 await interaction.followup.send("Gagal ngambil data cuaca, coba lagi nanti.")
 
+        @self.tree.command(name="leaderboard", description="Top 5 pemilik kartu legendary & mythic")
+        async def leaderboard(interaction: discord.Interaction) -> None:
+            data = load_data()
+            users = data.get("users", {})
+
+            ranked = sorted(
+                users.items(),
+                key=lambda x: x[1].get("legendary_count", 0) + x[1].get("mythic_count", 0),
+                reverse=True,
+            )[:5]
+
+            if not ranked or all(u[1].get("legendary_count", 0) + u[1].get("mythic_count", 0) == 0 for u in ranked):
+                await interaction.response.send_message("Belum ada yang dapet legendary atau mythic!")
+                return
+
+            embed = discord.Embed(title="🏆 Leaderboard Gacha", color=0xf1c40f)
+            for i, (uid, udata) in enumerate(ranked, 1):
+                legendary = udata.get("legendary_count", 0)
+                mythic = udata.get("mythic_count", 0)
+                if legendary + mythic == 0:
+                    continue
+                try:
+                    fetched = await self.fetch_user(int(uid))
+                    name = fetched.display_name
+                except Exception:
+                    name = f"User {uid}"
+                embed.add_field(
+                    name=f"{i}. {name}",
+                    value=f"🟡 Legendary: {legendary}  🔴 Mythic: {mythic}",
+                    inline=False,
+                )
+
+            await interaction.response.send_message(embed=embed)
+
+        @self.tree.command(name="koleksi", description="Lihat koleksi kartu kamu")
+        async def koleksi(interaction: discord.Interaction) -> None:
+            data = load_data()
+            user = get_user(data, str(interaction.user.id))
+            collection = user.get("collection", [])
+
+            if not collection:
+                await interaction.response.send_message("Koleksi kamu masih kosong! Ketik `idy` buat pull.")
+                return
+
+            by_rarity: dict[str, list[str]] = {}
+            for card_name in collection:
+                card = next((c for c in CARDS if c["name"] == card_name), None)
+                if card:
+                    by_rarity.setdefault(card["rarity"], []).append(card_name)
+
+            embed = discord.Embed(
+                title=f"Koleksi {interaction.user.display_name}",
+                description=f"Total: **{len(collection)}** kartu unik",
+                color=0x9b59b6,
+            )
+            for rarity in ["mythic", "legendary", "epic", "rare", "common"]:
+                if rarity in by_rarity:
+                    cfg = RARITY_CONFIG[rarity]
+                    cards_str = "\n".join(f"• {name}" for name in by_rarity[rarity])
+                    embed.add_field(
+                        name=f"{cfg['emoji']} {cfg['label']} ({len(by_rarity[rarity])})",
+                        value=cards_str,
+                        inline=False,
+                    )
+
+            await interaction.response.send_message(embed=embed)
+
         await self.tree.sync()
         log.info("Slash commands synced.")
 
@@ -123,9 +222,9 @@ class IdyBot(discord.Client):
 
         _log_trigger(message)
 
-        card = pull_card()
-        embed = _build_card_embed(card)
-        log.info("Card pulled | %s | rarity=%s", card["name"], card["rarity"])
+        card, is_pity = pull_card(message.author.id)
+        embed = _build_card_embed(card, is_pity)
+        log.info("Card pulled | %s | rarity=%s | pity=%s", card["name"], card["rarity"], is_pity)
 
         try:
             await message.reply(embed=embed, mention_author=False)
