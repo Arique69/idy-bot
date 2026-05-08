@@ -101,11 +101,6 @@ CARDS: list[dict] = [
         "rarity": "rare",
     },
     {
-        "url": "https://tenor.com/view/brandon-barber-thug-thug-hunter-thug-shaker-barber-gif-25755953",
-        "name": "Rusdi Hump Day",
-        "rarity": "rare",
-    },
-    {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9oryRGyTdzzFEBUgcb/giphy.gif",
         "name": "Amba Menangis",
         "rarity": "rare",
@@ -167,6 +162,11 @@ CARDS: list[dict] = [
         "rarity": "epic",
     },
     # --- Legendary 🟡 ---
+    {
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502367899938066503/tirai_emas.gif?ex=69ff74a3&is=69fe2323&hm=0c00be9160f114e8b6496044afa7c09de292045f834c9625e88bf14c6d8a42cb&=",
+        "name": "Tirai Misterius",
+        "rarity": "legendary",
+    },
 
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnYwMjQxN2RpYm1sZ3Z3OGRlNzV4dDAzNG9sdmJ5YnpkdTF3azFpZiZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/hxZMzujlY2Jv5sD36g/giphy.gif",
@@ -190,6 +190,11 @@ CARDS: list[dict] = [
         "rarity": "common",
     },
     # --- Mythic 🔴 ---
+    {
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502360275846692914/image.png?ex=69ff6d8a&is=69fe1c0a&hm=6b34444d76c10cb5b2ad6a536e9de2472f8d35176cdc022ac932bf8dfe347975&=&format=webp&quality=lossless",
+        "name": "Ayam Madu Panggang",
+        "rarity": "mythic",
+    },
     {
         "url": "https://media.discordapp.net/attachments/980988443708522518/1447968945771646977/Messenger_creation_3A6D65A9-00EC-44BB-9E93-00112779E044.gif?ex=69ff4eaa&is=69fdfd2a&hm=8474396943f02e08c4815948390ead0e73a56aef68c3c065b1db20ef3539402a&=",
         "name": "Geol-geol",
