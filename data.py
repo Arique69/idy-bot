@@ -36,4 +36,7 @@ def get_user(data: dict, user_id: str) -> dict:
         for name in user["collection"]:
             coll[name] = coll.get(name, 0) + 1
         user["collection"] = coll
+    user.setdefault("duel_wins", 0)
+    user.setdefault("duel_losses", 0)
+    user.setdefault("duel_draws", 0)
     return user
