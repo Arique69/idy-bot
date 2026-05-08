@@ -31,7 +31,7 @@ _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
     rf"\b{re.escape(TRIGGER_WORD)}\b", re.IGNORECASE
 )
 
-COOLDOWN_SECONDS = 30
+COOLDOWN_SECONDS = 60
 _cooldowns: dict[int, float] = {}
 
 RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic"]
