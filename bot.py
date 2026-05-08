@@ -214,6 +214,21 @@ class IdyBot(discord.Client):
                 log.error("Error fetching weather: %s", exc)
                 await interaction.followup.send("Gagal ngambil data cuaca, coba lagi nanti.")
 
+        @self.tree.command(name="rates", description="Lihat persentase drop rate tiap rarity")
+        async def rates(interaction: discord.Interaction) -> None:
+            total_weight = sum(r["weight"] for r in RARITY_CONFIG.values())
+            embed = discord.Embed(title="🎴 Drop Rates", color=0x9b59b6)
+            for rarity in ["mythic", "legendary", "epic", "rare", "common"]:
+                cfg = RARITY_CONFIG[rarity]
+                pct = cfg["weight"] / total_weight * 100
+                card_count = sum(1 for c in CARDS if c["rarity"] == rarity)
+                embed.add_field(
+                    name=f"{cfg['emoji']} {cfg['label']}",
+                    value=f"`{pct:.0f}%` — {card_count} kartu",
+                    inline=False,
+                )
+            await interaction.response.send_message(embed=embed)
+
         @self.tree.command(name="leaderboard", description="Top 5 pemilik kartu legendary & mythic")
         async def leaderboard(interaction: discord.Interaction) -> None:
             data = load_data()
