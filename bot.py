@@ -542,11 +542,14 @@ class IdyBot(discord.Client):
         async def gift_kartu_ac(interaction: discord.Interaction, current: str):
             data = load_data()
             user = get_user(data, str(interaction.user.id))
-            return [
-                app_commands.Choice(name=f"{name} (x{cnt})", value=name)
-                for name, cnt in user["collection"].items()
-                if cnt >= 2 and current.lower() in name.lower()
-            ][:25]
+            results = []
+            for name, cnt in user["collection"].items():
+                if cnt < 2 or current.lower() not in name.lower():
+                    continue
+                card_obj = next((c for c in CARDS if c["name"] == name), None)
+                emoji = RARITY_CONFIG[card_obj["rarity"]]["emoji"] if card_obj else ""
+                results.append(app_commands.Choice(name=f"{emoji} {name} (x{cnt})", value=name))
+            return results[:25]
 
         await self.tree.sync()
         log.info("Slash commands synced.")
