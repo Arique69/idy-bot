@@ -112,6 +112,11 @@ CARDS: list[dict] = [
     },
     # --- Epic 🟣 ---
     {
+        "url": "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dnR5OGp4ejB6Ymh6Z2szMnU2NHNoMzRveGlvZW5rMWgyZDZkcnY5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/eKwa7OVMk0Cqx8g8b5/giphy.gif",
+        "name": "Mahkota Mu King",
+        "rarity": "epic",
+    },
+    {
         "url": "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWtweWxrZ200Y3ljM3Rnc3E4enBjbmVmYTZrdW5qcXU3cHoxczBpdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/zJi5F4LxaFEGBGlb9h/giphy.gif",
         "name": "Menggugah Selera",
         "rarity": "epic",
