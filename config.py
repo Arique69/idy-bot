@@ -16,115 +16,115 @@ CARDS: list[dict] = [
     # --- Common ⚪ ---
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExODQ2OGRwcWxxMW53bWJwMW5seXRvY281N3E2OWtscGRkYnd4cjhlMyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/TPURLKJjqYNyjb4Q2K/giphy.gif",
-        "name": "Jomok Biasa Aja",
+        "name": "Halah Nyocot",
         "rarity": "common",
     },
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExODQ2OGRwcWxxMW53bWJwMW5seXRvY281N3E2OWtscGRkYnd4cjhlMyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/wgQTGjJMReIsbLnB3G/giphy.gif",
-        "name": "PHP Ringan",
+        "name": "Pura-pura ga liat",
         "rarity": "common",
     },
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3N2xvejd3ZHF6Yms1d3V0NWR1Z2IzMHdnNXA3eTljZTl4c3RsNG13YSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/VBcO3pX9s9rs5H29DD/giphy.gif",
-        "name": "Cuma Temenan Kok",
+        "name": "Ngabuburit yuk",
         "rarity": "common",
     },
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3emYyNW9maWtheXV5ZjI2MXhxZnpkeGR6dXltdmptcnRyeWQ1b2RmdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/anec64aGGWj3KZ1iP4/giphy.gif",
-        "name": "Gebetan Zonk",
+        "name": "Malas Banget",
         "rarity": "common",
     },
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3ZWhrNDc0NTc4b3pvZXdsNDBmM3FuZjRiM2FhemViZjI3MDE5MTJ1NCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xjB29zEPeUogVR9Hha/giphy.gif",
-        "name": "Modus Gagal",
+        "name": "Nguwawor",
         "rarity": "common",
     },
     {
         "url": "https://media.giphy.com/media/Ihx6bbytRTEiQ7e4xF/giphy.gif",
-        "name": "Pengen Tapi Gak Jadi",
+        "name": "Andriana PSHT",
         "rarity": "common",
     },
     {
         "url": "https://media.giphy.com/media/jsLf2ALAjO8g7mpmt0/giphy.gif",
-        "name": "Cringe Level 1",
+        "name": "Tolong dijelaskan",
         "rarity": "common",
     },
     {
         "url": "https://media.giphy.com/media/5PSwLEcp5qvlFtGasw/giphy.gif",
-        "name": "Jomok Pemula",
-        "rarity": "common",
-    },
-    {
-        "url": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGF6OHZtbzBlMGttbGswMDJkYmFwbXozMW1ydHZncGhra2F6aTRhbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dgWteQuo1LXqlxiDJU/giphy.gif",
-        "name": "Jomok Ketahuan",
-        "rarity": "common",
-    },
-    {
-        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnYwMjQxN2RpYm1sZ3Z3OGRlNzV4dDAzNG9sdmJ5YnpkdTF3azFpZiZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/hxZMzujlY2Jv5sD36g/giphy.gif",
-        "name": "Curhat ke Angin",
+        "name": "Pegi Kau Suki",
         "rarity": "common",
     },
     {
         "url": "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzBhMDQ4ZnZ3ZXFnMWxwYjE4eGVibjUydnlvdjVpeHBzcW5nbzdmbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/D5LIdoJaeUBIfJC1sj/giphy.gif",
-        "name": "Gagal Move On",
+        "name": "Lebaran",
         "rarity": "common",
     },
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExanM4YXVyY2MzdzFlNWxhbHhndXU4eTcxdjd0MjJ1N3YzYjFibjVmaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/uizHrLgtExbmXRtPhp/giphy.gif",
-        "name": "Bucin Akut",
+        "name": "Bohong",
         "rarity": "common",
     },
     {
-        "url": "https://media.giphy.com/media/iadQidGpB8molTjslq/giphy.gif",
-        "name": "Jomok Santuy",
+        "url": "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNG5udGJ5bGdmbG83dzByNWlnN24xN2p6c2F0MXZuNmUwb2gxYzRrYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iadQidGpB8molTjslq/giphy.gif",
+        "name": "Selamat Berbuka",
         "rarity": "common",
     },
     {
-        "url": "https://media.giphy.com/media/6hEkOjy76BpkNG3K4p/giphy.gif",
-        "name": "Patah Hati Tipis",
+        "url": "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXpmeGtoN2FkdzlzeDBtdnlkeW1udmV6N3dkaXlhMzBnaHZhYnQ2aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6hEkOjy76BpkNG3K4p/giphy.gif",
+        "name": "Admin Telah Tiba",
         "rarity": "common",
     },
     # --- Rare 🔵 ---
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xz0qNZfJM3XeKznwVq/giphy.gif",
-        "name": "Modus Berbahaya",
+        "name": "Malas",
         "rarity": "rare",
     },
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9oryRGyTdzzFEBUgcb/giphy.gif",
-        "name": "PHP Master",
+        "name": "Amba Menangis",
         "rarity": "rare",
     },
     {
         "url": "https://media.giphy.com/media/VwNySHxfzhksbDnR0v/giphy.gif",
-        "name": "Jomok Terlatih",
+        "name": "Mana Buktinya",
         "rarity": "rare",
     },
     {
         "url": "https://media.giphy.com/media/gNjSEUHYeGVAiSRwyt/giphy.gif",
-        "name": "Jomok Spesialis",
+        "name": "Pilot Amba",
         "rarity": "rare",
     },
     # --- Epic 🟣 ---
     {
+        "url": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGF6OHZtbzBlMGttbGswMDJkYmFwbXozMW1ydHZncGhra2F6aTRhbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dgWteQuo1LXqlxiDJU/giphy.gif",
+        "name": "Solo Baca Buku",
+        "rarity": "epic",
+    },
+    {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QGyYIduiYf1zUkFHfR/giphy.gif",
-        "name": "The Cringe Lord",
+        "name": "Ape pula bodoh nih",
         "rarity": "epic",
     },
     {
         "url": "https://media.giphy.com/media/bTnjjJn4pJLFUa0CLP/giphy.gif",
-        "name": "Jomok Awakened",
+        "name": "Tertawa Tapi Teluka",
         "rarity": "epic",
     },
     # --- Legendary 🟡 ---
     {
-        "url": "https://media.giphy.com/media/iiCQrGn7lEiWXF7fxe/giphy.gif",
-        "name": "Jomok Abadi",
+        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnYwMjQxN2RpYm1sZ3Z3OGRlNzV4dDAzNG9sdmJ5YnpkdTF3azFpZiZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/hxZMzujlY2Jv5sD36g/giphy.gif",
+        "name": "Solo Swag",
         "rarity": "legendary",
     },
     {
-        "url": "https://media.giphy.com/media/kMKvXRK36RijLVaaJb/giphy.gif",
-        "name": "Jomok Terakhir",
+        "url": "https://media.giphy.com/media/iiCQrGn7lEiWXF7fxe/giphy.gif",
+        "name": "Rusdi  nah ini",
+        "rarity": "legendary",
+    },
+    {
+        "url": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd3k4Y2ltd2J5bnA4dWNsNDQ1eWx5emJ1Zmp4bmkzemkycTdubzFpdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/kMKvXRK36RijLVaaJb/giphy.gif",
+        "name": "Rusdi Informasi Palsu",
         "rarity": "legendary",
     },
     # --- Mythic 🔴 ---
