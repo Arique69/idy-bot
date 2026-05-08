@@ -26,6 +26,9 @@ def get_user(data: dict, user_id: str) -> dict:
             "collection": {},
             "legendary_count": 0,
             "mythic_count": 0,
+            "duel_wins": 0,
+            "duel_losses": 0,
+            "duel_draws": 0,
         }
     user = data["users"][user_id]
     if isinstance(user.get("collection"), list):

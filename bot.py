@@ -383,15 +383,27 @@ class IdyBot(discord.Client):
             cfg_a = RARITY_CONFIG[card_a["rarity"]]
             cfg_b = RARITY_CONFIG[card_b["rarity"]]
 
+            data = load_data()
+            user_a = get_user(data, str(interaction.user.id))
+            user_b = get_user(data, str(lawan.id))
+
             if rank_a > rank_b:
                 result = f"🏆 **{interaction.user.display_name}** menang!"
                 color = 0x2ecc71
+                user_a["duel_wins"] += 1
+                user_b["duel_losses"] += 1
             elif rank_b > rank_a:
                 result = f"🏆 **{lawan.display_name}** menang!"
                 color = 0xe74c3c
+                user_b["duel_wins"] += 1
+                user_a["duel_losses"] += 1
             else:
                 result = "🤝 **Seri!**"
                 color = 0x95a5a6
+                user_a["duel_draws"] += 1
+                user_b["duel_draws"] += 1
+
+            save_data(data)
 
             embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
             embed.add_field(
@@ -406,6 +418,47 @@ class IdyBot(discord.Client):
                 inline=True,
             )
             embed.set_footer(text="Kartu duel tidak masuk koleksi")
+
+            await interaction.response.send_message(embed=embed)
+
+        @self.tree.command(name="duelstats", description="Lihat statistik duel kamu atau user lain")
+        @app_commands.describe(user="User yang mau dilihat statsnya (kosongkan untuk stats kamu sendiri)")
+        async def duelstats(interaction: discord.Interaction, user: discord.Member = None) -> None:
+            target = user or interaction.user
+            data = load_data()
+            udata = get_user(data, str(target.id))
+
+            wins = udata.get("duel_wins", 0)
+            losses = udata.get("duel_losses", 0)
+            draws = udata.get("duel_draws", 0)
+            total = wins + losses + draws
+            winrate = (wins / total * 100) if total > 0 else 0
+
+            embed = discord.Embed(
+                title=f"⚔️ Duel Stats — {target.display_name}",
+                color=0xf1c40f,
+            )
+            embed.add_field(name="🏆 Menang", value=str(wins), inline=True)
+            embed.add_field(name="💀 Kalah", value=str(losses), inline=True)
+            embed.add_field(name="🤝 Seri", value=str(draws), inline=True)
+            embed.add_field(name="📊 Total Duel", value=str(total), inline=True)
+            embed.add_field(name="📈 Win Rate", value=f"{winrate:.1f}%", inline=True)
+
+            users = data.get("users", {})
+            ranked = sorted(users.items(), key=lambda x: x[1].get("duel_wins", 0), reverse=True)[:5]
+            lines = []
+            for i, (uid, ud) in enumerate(ranked, 1):
+                w = ud.get("duel_wins", 0)
+                if w == 0:
+                    continue
+                try:
+                    fetched = await self.fetch_user(int(uid))
+                    name = fetched.display_name
+                except Exception:
+                    name = f"User {uid}"
+                lines.append(f"{i}. **{name}** — {w} menang")
+            if lines:
+                embed.add_field(name="🏅 Top Duelists", value="\n".join(lines), inline=False)
 
             await interaction.response.send_message(embed=embed)
 
