@@ -100,7 +100,22 @@ CARDS: list[dict] = [
         "name": "Rewel Cipok",
         "rarity": "rare",
     },
+    {
+        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzg2bDF4Y2NscXNscm5pZDhsbmdhbmwxanBscTN5dnkxZGhyNmR2MyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9x8jtSVcUg6jmDzyk6/giphy.gif",
+        "name": "Bobok",
+        "rarity": "rare",
+    },
+    {
+        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzg2bDF4Y2NscXNscm5pZDhsbmdhbmwxanBscTN5dnkxZGhyNmR2MyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/PROl6AeJzqAWo3n0Y8/giphy.gif",
+        "name": "Ayah Tidur",
+        "rarity": "rare",
+    },
     # --- Epic 🟣 ---
+    {
+        "url": "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3NWtweWxrZ200Y3ljM3Rnc3E4enBjbmVmYTZrdW5qcXU3cHoxczBpdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/zJi5F4LxaFEGBGlb9h/giphy.gif",
+        "name": "Menggugah Selera",
+        "rarity": "epic",
+    },
     {
         "url": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGF6OHZtbzBlMGttbGswMDJkYmFwbXozMW1ydHZncGhra2F6aTRhbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dgWteQuo1LXqlxiDJU/giphy.gif",
         "name": "Solo Baca Buku",
