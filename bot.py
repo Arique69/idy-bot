@@ -621,6 +621,8 @@ class IdyBot(discord.Client):
                 results.append(app_commands.Choice(name=f"{emoji} {name} (x{cnt})", value=name))
             return results[:25]
 
+        self.tree.clear_commands(guild=None)
+        await self.tree.sync()
         self.tree.copy_global_to(guild=GUILD)
         await self.tree.sync(guild=GUILD)
         log.info("Slash commands synced to guild %s.", GUILD.id)
