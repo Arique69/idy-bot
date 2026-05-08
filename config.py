@@ -5,11 +5,11 @@ from __future__ import annotations
 TRIGGER_WORD: str = "idy"
 
 RARITY_CONFIG: dict = {
-    "common":    {"emoji": "⚪", "color": 0x95a5a6, "label": "Common",    "shout": "Dapet kartu..."},
-    "rare":      {"emoji": "🔵", "color": 0x3498db, "label": "Rare",      "shout": "✨ Rare Pull!"},
-    "epic":      {"emoji": "🟣", "color": 0x9b59b6, "label": "Epic",      "shout": "🌟 EPIC PULL!"},
-    "legendary": {"emoji": "🟡", "color": 0xf1c40f, "label": "Legendary", "shout": "💫 LEGENDARY!!!"},
-    "mythic":    {"emoji": "🔴", "color": 0xe74c3c, "label": "MYTHIC",    "shout": "🔥 MYTHIC!!!! 🔥"},
+    "common":    {"emoji": "⚪", "color": 0x95a5a6, "label": "Common",    "shout": "Dapet kartu...",    "weight": 22},
+    "rare":      {"emoji": "🔵", "color": 0x3498db, "label": "Rare",      "shout": "✨ Rare Pull!",     "weight": 22},
+    "epic":      {"emoji": "🟣", "color": 0x9b59b6, "label": "Epic",      "shout": "🌟 EPIC PULL!",    "weight": 22},
+    "legendary": {"emoji": "🟡", "color": 0xf1c40f, "label": "Legendary", "shout": "💫 LEGENDARY!!!",  "weight": 22},
+    "mythic":    {"emoji": "🔴", "color": 0xe74c3c, "label": "MYTHIC",    "shout": "🔥 MYTHIC!!!! 🔥", "weight": 12},
 }
 
 CARDS: list[dict] = [
@@ -74,6 +74,16 @@ CARDS: list[dict] = [
         "name": "Bucin Akut",
         "rarity": "common",
     },
+    {
+        "url": "https://media.giphy.com/media/iadQidGpB8molTjslq/giphy.gif",
+        "name": "Jomok Santuy",
+        "rarity": "common",
+    },
+    {
+        "url": "https://media.giphy.com/media/6hEkOjy76BpkNG3K4p/giphy.gif",
+        "name": "Patah Hati Tipis",
+        "rarity": "common",
+    },
     # --- Rare 🔵 ---
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xz0qNZfJM3XeKznwVq/giphy.gif",
@@ -111,5 +121,16 @@ CARDS: list[dict] = [
         "url": "https://media.giphy.com/media/iiCQrGn7lEiWXF7fxe/giphy.gif",
         "name": "Jomok Abadi",
         "rarity": "legendary",
+    },
+    {
+        "url": "https://media.giphy.com/media/kMKvXRK36RijLVaaJb/giphy.gif",
+        "name": "Jomok Terakhir",
+        "rarity": "legendary",
+    },
+    # --- Mythic 🔴 ---
+    {
+        "url": "https://cdn.discordapp.com/attachments/1224139598255624252/1466400312376950926/RGB.gif?ex=69fe76f6&is=69fd2576&hm=77494915c3546f97f96c0f56c0f15c9a7bf94b92563a1c09cdc0343fab4c1c46",
+        "name": "RGB Jomok",
+        "rarity": "mythic",
     },
 ]

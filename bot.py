@@ -31,7 +31,13 @@ _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
 
 
 def pull_card() -> dict:
-    return random.choice(CARDS)
+    rarities = list(RARITY_CONFIG.keys())
+    weights = [RARITY_CONFIG[r]["weight"] for r in rarities]
+    chosen_rarity = random.choices(rarities, weights=weights, k=1)[0]
+    pool = [c for c in CARDS if c["rarity"] == chosen_rarity]
+    if not pool:
+        pool = CARDS
+    return random.choice(pool)
 
 
 def contains_trigger(text: str) -> bool:
