@@ -95,6 +95,11 @@ CARDS: list[dict] = [
         "name": "Pilot Amba",
         "rarity": "rare",
     },
+    {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1501879984283717684/Screenshot_20260507_163251_TikTok.png?ex=69fe56fb&is=69fd057b&hm=41dca3836e6d370cdf6ac69e6c8c105f073bc9fa8d27b4b6d0d597dc475b67bb&=&format=webp&quality=lossless",
+        "name": "Rewel Cipok",
+        "rarity": "rare",
+    },
     # --- Epic 🟣 ---
     {
         "url": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGF6OHZtbzBlMGttbGswMDJkYmFwbXozMW1ydHZncGhra2F6aTRhbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dgWteQuo1LXqlxiDJU/giphy.gif",
