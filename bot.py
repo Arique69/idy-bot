@@ -10,7 +10,6 @@ from datetime import datetime, timezone
 
 import aiohttp
 import discord
-import yfinance as yf
 from discord import app_commands
 from dotenv import load_dotenv
 import os
@@ -212,29 +211,33 @@ class IdyBot(discord.Client):
             try:
                 ticker_upper = ticker.upper().strip()
                 # Coba IDX dulu, fallback ke US kalau ga ketemu
-                symbol = f"{ticker_upper}.JK"
-                stock = yf.Ticker(symbol)
-                info = stock.info
+                for symbol in [f"{ticker_upper}.JK", ticker_upper]:
+                    url = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}"
+                    headers = {"User-Agent": "Mozilla/5.0"}
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                            data = await resp.json(content_type=None)
 
-                # Kalau ga ada data, coba tanpa .JK (US market)
-                if not info.get("regularMarketPrice") and not info.get("currentPrice"):
-                    symbol = ticker_upper
-                    stock = yf.Ticker(symbol)
-                    info = stock.info
+                    result = data.get("quoteResponse", {}).get("result", [])
+                    if result:
+                        q = result[0]
+                        break
+                else:
+                    await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
+                    return
 
-                price = info.get("currentPrice") or info.get("regularMarketPrice")
+                price = q.get("regularMarketPrice")
                 if not price:
                     await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
                     return
 
-                name = info.get("longName") or info.get("shortName") or symbol
-                currency = info.get("currency", "")
-                prev_close = info.get("previousClose", 0)
-                change = price - prev_close
-                change_pct = (change / prev_close * 100) if prev_close else 0
-                high = info.get("dayHigh", "-")
-                low = info.get("dayLow", "-")
-                volume = info.get("volume") or info.get("regularMarketVolume")
+                name = q.get("longName") or q.get("shortName") or symbol
+                currency = q.get("currency", "")
+                change = q.get("regularMarketChange", 0)
+                change_pct = q.get("regularMarketChangePercent", 0)
+                high = q.get("regularMarketDayHigh")
+                low = q.get("regularMarketDayLow")
+                volume = q.get("regularMarketVolume")
 
                 arrow = "🟢 ▲" if change >= 0 else "🔴 ▼"
                 sign = "+" if change >= 0 else ""
@@ -244,8 +247,8 @@ class IdyBot(discord.Client):
                 embed.add_field(name="Harga", value=f"**{currency} {price:,.2f}**", inline=True)
                 embed.add_field(name="Perubahan", value=f"{arrow} {sign}{change:,.2f} ({sign}{change_pct:.2f}%)", inline=True)
                 embed.add_field(name="​", value="​", inline=True)
-                embed.add_field(name="Tertinggi Hari Ini", value=f"{currency} {high:,.2f}" if isinstance(high, float) else "-", inline=True)
-                embed.add_field(name="Terendah Hari Ini", value=f"{currency} {low:,.2f}" if isinstance(low, float) else "-", inline=True)
+                embed.add_field(name="Tertinggi Hari Ini", value=f"{currency} {high:,.2f}" if high else "-", inline=True)
+                embed.add_field(name="Terendah Hari Ini", value=f"{currency} {low:,.2f}" if low else "-", inline=True)
                 embed.add_field(name="Volume", value=f"{volume:,}" if volume else "-", inline=True)
                 embed.set_footer(text="Sumber: Yahoo Finance • Data bisa delay 15 menit")
 
