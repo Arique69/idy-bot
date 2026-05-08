@@ -63,8 +63,7 @@ def pull_card(user_id: int) -> tuple[dict, bool]:
         pool = CARDS
     card = random.choice(pool)
 
-    if card["name"] not in user["collection"]:
-        user["collection"].append(card["name"])
+    user["collection"][card["name"]] = user["collection"].get(card["name"], 0) + 1
 
     if chosen_rarity == "legendary":
         user["legendary_count"] += 1
@@ -123,19 +122,21 @@ class TradeView(discord.ui.View):
         user_a = get_user(data, str(self.challenger.id))
         user_b = get_user(data, str(self.target.id))
 
-        if self.card_a not in user_a["collection"]:
+        if user_a["collection"].get(self.card_a, 0) < 1:
             await self._finish(interaction, f"❌ Trade gagal — **{self.challenger.display_name}** udah ga punya **{self.card_a}**.")
             return
-        if self.card_b not in user_b["collection"]:
+        if user_b["collection"].get(self.card_b, 0) < 1:
             await self._finish(interaction, f"❌ Trade gagal — **{self.target.display_name}** udah ga punya **{self.card_b}**.")
             return
 
-        user_a["collection"].remove(self.card_a)
-        user_b["collection"].remove(self.card_b)
-        if self.card_b not in user_a["collection"]:
-            user_a["collection"].append(self.card_b)
-        if self.card_a not in user_b["collection"]:
-            user_b["collection"].append(self.card_a)
+        user_a["collection"][self.card_a] -= 1
+        if user_a["collection"][self.card_a] <= 0:
+            del user_a["collection"][self.card_a]
+        user_b["collection"][self.card_b] -= 1
+        if user_b["collection"][self.card_b] <= 0:
+            del user_b["collection"][self.card_b]
+        user_a["collection"][self.card_b] = user_a["collection"].get(self.card_b, 0) + 1
+        user_b["collection"][self.card_a] = user_b["collection"].get(self.card_a, 0) + 1
 
         save_data(data)
         await self._finish(
@@ -255,11 +256,11 @@ class IdyBot(discord.Client):
                 await interaction.response.send_message("Koleksi kamu masih kosong! Ketik `idy` buat pull.")
                 return
 
-            by_rarity: dict[str, list[str]] = {}
-            for card_name in collection:
+            by_rarity: dict[str, list[tuple[str, int]]] = {}
+            for card_name, count in collection.items():
                 card = next((c for c in CARDS if c["name"] == card_name), None)
                 if card:
-                    by_rarity.setdefault(card["rarity"], []).append(card_name)
+                    by_rarity.setdefault(card["rarity"], []).append((card_name, count))
 
             total_cards = len(CARDS)
             embed = discord.Embed(
@@ -271,7 +272,10 @@ class IdyBot(discord.Client):
                 if rarity in by_rarity:
                     cfg = RARITY_CONFIG[rarity]
                     total_rarity = sum(1 for c in CARDS if c["rarity"] == rarity)
-                    cards_str = "\n".join(f"• {name}" for name in by_rarity[rarity])
+                    cards_str = "\n".join(
+                        f"• {name} x{cnt}" if cnt > 1 else f"• {name}"
+                        for name, cnt in by_rarity[rarity]
+                    )
                     embed.add_field(
                         name=f"{cfg['emoji']} {cfg['label']} ({len(by_rarity[rarity])}/{total_rarity})",
                         value=cards_str,
@@ -429,10 +433,10 @@ class IdyBot(discord.Client):
             user_a = get_user(data, str(interaction.user.id))
             user_b = get_user(data, str(lawan.id))
 
-            if kartu_kamu not in user_a["collection"]:
+            if user_a["collection"].get(kartu_kamu, 0) < 1:
                 await interaction.response.send_message(f"Kamu ga punya kartu **{kartu_kamu}**!", ephemeral=True)
                 return
-            if kartu_dia not in user_b["collection"]:
+            if user_b["collection"].get(kartu_dia, 0) < 1:
                 await interaction.response.send_message(f"**{lawan.display_name}** ga punya kartu **{kartu_dia}**!", ephemeral=True)
                 return
 
@@ -489,6 +493,59 @@ class IdyBot(discord.Client):
                 app_commands.Choice(name=c["name"], value=c["name"])
                 for c in CARDS
                 if current.lower() in c["name"].lower()
+            ][:25]
+
+        @self.tree.command(name="gift", description="Kasih kartu duplikat ke user lain")
+        @app_commands.describe(
+            penerima="User yang mau dikasih kartu",
+            kartu="Kartu duplikat yang mau dikasih (harus punya lebih dari 1)",
+        )
+        async def gift(interaction: discord.Interaction, penerima: discord.Member, kartu: str) -> None:
+            if penerima.bot or penerima.id == interaction.user.id:
+                await interaction.response.send_message("Ga bisa gift ke bot atau diri sendiri!", ephemeral=True)
+                return
+
+            data = load_data()
+            sender = get_user(data, str(interaction.user.id))
+            receiver = get_user(data, str(penerima.id))
+
+            if sender["collection"].get(kartu, 0) < 2:
+                await interaction.response.send_message(
+                    f"Kamu ga punya duplikat **{kartu}**! Hanya kartu yang kamu punya lebih dari 1 yang bisa di-gift.",
+                    ephemeral=True,
+                )
+                return
+
+            sender["collection"][kartu] -= 1
+            if sender["collection"][kartu] <= 0:
+                del sender["collection"][kartu]
+            receiver["collection"][kartu] = receiver["collection"].get(kartu, 0) + 1
+
+            save_data(data)
+
+            card_obj = next((c for c in CARDS if c["name"] == kartu), None)
+            cfg = RARITY_CONFIG[card_obj["rarity"]] if card_obj else {}
+
+            embed = discord.Embed(
+                title="🎁 Gift Kartu!",
+                description=f"**{interaction.user.display_name}** ngasih kartu ke {penerima.mention}!",
+                color=cfg.get("color", 0x3498db),
+            )
+            embed.add_field(
+                name="Kartu",
+                value=f"{cfg.get('emoji', '')} **{kartu}**\n`{cfg.get('label', '')}`",
+                inline=False,
+            )
+            await interaction.response.send_message(embed=embed)
+
+        @gift.autocomplete("kartu")
+        async def gift_kartu_ac(interaction: discord.Interaction, current: str):
+            data = load_data()
+            user = get_user(data, str(interaction.user.id))
+            return [
+                app_commands.Choice(name=f"{name} (x{cnt})", value=name)
+                for name, cnt in user["collection"].items()
+                if cnt >= 2 and current.lower() in name.lower()
             ][:25]
 
         await self.tree.sync()

@@ -23,8 +23,14 @@ def get_user(data: dict, user_id: str) -> dict:
     if user_id not in data["users"]:
         data["users"][user_id] = {
             "common_streak": 0,
-            "collection": [],
+            "collection": {},
             "legendary_count": 0,
             "mythic_count": 0,
         }
-    return data["users"][user_id]
+    user = data["users"][user_id]
+    if isinstance(user.get("collection"), list):
+        coll: dict[str, int] = {}
+        for name in user["collection"]:
+            coll[name] = coll.get(name, 0) + 1
+        user["collection"] = coll
+    return user
