@@ -444,21 +444,37 @@ class IdyBot(discord.Client):
             embed.add_field(name="📊 Total Duel", value=str(total), inline=True)
             embed.add_field(name="📈 Win Rate", value=f"{winrate:.1f}%", inline=True)
 
+            await interaction.response.send_message(embed=embed)
+
+        @self.tree.command(name="duelleaderboard", description="Top 5 duelist dengan menang terbanyak")
+        async def duelleaderboard(interaction: discord.Interaction) -> None:
+            data = load_data()
             users = data.get("users", {})
+
             ranked = sorted(users.items(), key=lambda x: x[1].get("duel_wins", 0), reverse=True)[:5]
-            lines = []
-            for i, (uid, ud) in enumerate(ranked, 1):
-                w = ud.get("duel_wins", 0)
-                if w == 0:
+
+            if not ranked or all(u[1].get("duel_wins", 0) == 0 for u in ranked):
+                await interaction.response.send_message("Belum ada yang pernah duel!")
+                return
+
+            embed = discord.Embed(title="⚔️ Duel Leaderboard", color=0xe74c3c)
+            medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
+            for i, (uid, ud) in enumerate(ranked):
+                wins = ud.get("duel_wins", 0)
+                losses = ud.get("duel_losses", 0)
+                draws = ud.get("duel_draws", 0)
+                if wins == 0:
                     continue
                 try:
                     fetched = await self.fetch_user(int(uid))
                     name = fetched.display_name
                 except Exception:
                     name = f"User {uid}"
-                lines.append(f"{i}. **{name}** — {w} menang")
-            if lines:
-                embed.add_field(name="🏅 Top Duelists", value="\n".join(lines), inline=False)
+                embed.add_field(
+                    name=f"{medals[i]} {name}",
+                    value=f"🏆 {wins} menang  💀 {losses} kalah  🤝 {draws} seri",
+                    inline=False,
+                )
 
             await interaction.response.send_message(embed=embed)
 
