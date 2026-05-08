@@ -1,106 +1,104 @@
-# idy-bot
+# Idy Bot 🎴
 
-A Discord bot that replies with a random GIF whenever someone says "idy" (whole word, case-insensitive).
-
----
-
-## 1 — Create a Discord Application & Bot
-
-1. Go to <https://discord.com/developers/applications> and click **New Application**.
-2. Give it a name, then open the **Bot** tab on the left sidebar.
-3. Click **Add Bot** → **Yes, do it!**
-4. Under the bot's username, click **Reset Token**, copy it, and keep it secret — this goes in your `.env`.
+Discord bot gacha kartu GIF. Ketik `idy` di chat, bot bakal reply dengan kartu random berdasarkan sistem rarity.
 
 ---
 
-## 2 — Enable the Message Content Intent
+## Cara Pakai
 
-Still on the **Bot** tab, scroll down to **Privileged Gateway Intents** and toggle **Message Content Intent** ON. Save changes.
-
-> Without this, the bot cannot read message text and will never trigger.
+Ketik **`idy`** di channel mana aja → bot reply dengan kartu gacha.
 
 ---
 
-## 3 — Invite the Bot to Your Server
+## Sistem Rarity
 
-1. Go to the **OAuth2 → URL Generator** tab.
-2. Under **Scopes**, check `bot`.
-3. Under **Bot Permissions**, check:
-   - `Send Messages`
-   - `Read Message History`
-4. Copy the generated URL, open it in a browser, and select the server you want to add the bot to.
+| Rarity | Emoji | Drop Rate | Jumlah Kartu |
+|--------|-------|-----------|--------------|
+| Common | ⚪ | 23% | 12 |
+| Rare | 🔵 | 23% | 7 |
+| Epic | 🟣 | 23% | 4 |
+| Legendary | 🟡 | 23% | 3 |
+| Mythic | 🔴 | 8% | 1 |
+| **Total** | | **100%** | **27** |
+
+### Pity System
+Kalau dapet **Common 3x berturut-turut**, pull berikutnya dijamin **Rare ke atas**. Footer embed bakal muncul `🍀 Pity activated!` kalau pity aktif.
 
 ---
 
-## 4 — Install Dependencies
+## Slash Commands
+
+| Command | Fungsi |
+|---------|--------|
+| `/koleksi` | Lihat semua kartu unik yang pernah kamu dapet, dikelompokkan per rarity |
+| `/leaderboard` | Top 5 user dengan kartu Legendary & Mythic terbanyak |
+| `/cuaca` | Cek cuaca hari ini di Jakarta |
+
+---
+
+## Struktur File
+
+```
+idy-bot/
+├── bot.py        # Main bot, event handler, slash commands
+├── config.py     # Konfigurasi rarity & daftar kartu
+├── data.py       # Load/save data user ke data.json
+├── data.json     # Data user (koleksi, streak, count) — tidak di-push ke git
+└── .env          # Discord token — tidak di-push ke git
+```
+
+---
+
+## Nambahin Kartu
+
+Edit `config.py`, tambahin entry baru di list `CARDS`:
+
+```python
+{
+    "url": "https://link-gif.gif",
+    "name": "Nama Kartu",
+    "rarity": "common",  # common / rare / epic / legendary / mythic
+},
+```
+
+---
+
+## Setup
+
+### 1. Buat Discord Bot
+
+1. Buka <https://discord.com/developers/applications> → **New Application**
+2. Tab **Bot** → **Reset Token**, copy tokennya
+3. Aktifkan **Message Content Intent** di tab Bot → Privileged Gateway Intents
+4. **OAuth2 → URL Generator** → centang `bot` + permissions `Send Messages` & `Read Message History` → invite ke server
+
+### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Python 3.10+ is required.
+Python 3.10+ diperlukan.
 
----
-
-## 5 — Set Up `.env`
-
-Copy the example file and fill in your token:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
+### 3. Buat file `.env`
 
 ```
-DISCORD_TOKEN=your_actual_bot_token_here
+DISCORD_TOKEN=token_discord_kamu
 ```
 
-**Never commit `.env` — it is already in `.gitignore`.**
-
----
-
-## 6 — Run the Bot
+### 4. Jalankan Bot
 
 ```bash
 python bot.py
 ```
 
-You should see:
-
-```
-2026-05-07 12:00:00 [INFO] Bot ready — logged in as idy-bot#1234 (id=123456789)
-```
-
-The bot will now respond in any channel it can read and write in.
+> `data.json` akan otomatis terbuat saat bot pertama kali jalan.
 
 ---
 
-## 7 — Customize GIFs and the Trigger Word
-
-Open `config.py`:
-
-```python
-TRIGGER_WORD: str = "idy"   # Change to any word
-
-GIFS: list[str] = [
-    "https://media.tenor.com/your-gif-1.gif",
-    "https://media.tenor.com/your-gif-2.gif",
-    # Add as many as you like
-]
-```
-
-- Replace the placeholder URLs with real Tenor or Giphy URLs — Discord will auto-embed them.
-- To add support for more trigger words later, add entries to a `TRIGGERS` list and iterate over them in `bot.py`'s `contains_trigger`.
-
----
-
-## Console Log Format
-
-Each trigger event is logged like:
+## Format Log
 
 ```
-2026-05-07 12:01:23 [INFO] Trigger | 2026-05-07 12:01:23 UTC | guild=My Server channel=#general user=someone#0001
+2026-05-07 12:01:23 [INFO] Trigger | 2026-05-07 12:01:23 UTC | guild=My Server channel=#general user=someone
+2026-05-07 12:01:23 [INFO] Card pulled | Solo Swag | rarity=legendary | pity=False
 ```
-
-Message content is intentionally **not** logged for privacy.
