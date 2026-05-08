@@ -81,6 +81,11 @@ CARDS: list[dict] = [
     },
     # --- Rare 🔵 ---
     {
+        "url": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGdwc3NlOWRndG90bm54c2VhanFscGJheWV5dG9nZzI2NGNyd25lYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/H7oe4YDsrMbNuzCF1g/giphy.gif",
+        "name": "Idy Dame yo",
+        "rarity": "rare",
+    },
+    {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xz0qNZfJM3XeKznwVq/giphy.gif",
         "name": "Malas",
         "rarity": "rare",
@@ -96,7 +101,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
     },
     {
-        "url": "https://media.discordapp.net/attachments/640554506525868082/1502362384562393138/1e9cc19e8ab2ae01baa1c70ca3a0012d.png?ex=69ff6f81&is=69fe1e01&hm=6352cee0657bb0cf3ecc69be37209f218534f9bf782d0489fea5b3b05060cd36&=&format=webp&quality=lossless",
+        "url": "https://tenor.com/bUesL.gif",
         "name": "Rusdi Hump Day",
         "rarity": "rare",
     },
@@ -162,11 +167,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
     },
     # --- Legendary 🟡 ---
-    {
-        "url": "https://images-ext-1.discordapp.net/external/FXWZTXH3m3OQlTFnmh5CJPuFaZ4SYoahZe5_AfPDe9w/https/media.tenor.com/JhBmmEylv1AAAAPo/kiss-a-homie-kiss.mp4",
-        "name": "Kissu",
-        "rarity": "legendary",
-    },
+
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnYwMjQxN2RpYm1sZ3Z3OGRlNzV4dDAzNG9sdmJ5YnpkdTF3azFpZiZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/hxZMzujlY2Jv5sD36g/giphy.gif",
         "name": "Solo Swag",
