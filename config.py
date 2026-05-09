@@ -198,10 +198,30 @@ CARDS: list[dict] = [
         "name": "Rusdi Informasi Palsu",
         "rarity": "legendary",
     },
+    {
+        "url": "https://media.discordapp.net/attachments/1297579892254441482/1465496007193133207/STK-20250602-WA0073.webp?ex=6a0072c3&is=69ff2143&hm=1df2040e901fb681dcb7296987b2bedb72b56034a452434c23cf65b9626c6bea&=&animated=true",
+        "name": "Dimas Ketoprak",
+        "rarity": "legendary",
+    },
+    {
+        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXBzdXpqMDlpb3BoamtwMTFxN3hsaHc4cDNxc2dmYnY1amgxanljdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/zLnmKwL1QQ9YbmAGJg/giphy.gif",
+        "name": "King Ronaldo",
+        "rarity": "legendary",
+    },
     # --- Common ⚪ (extra) ---
     {
         "url": "https://media.discordapp.net/attachments/640554506525868082/1502362384562393138/1e9cc19e8ab2ae01baa1c70ca3a0012d.png?ex=69ff6f81&is=69fe1e01&hm=6352cee0657bb0cf3ecc69be37209f218534f9bf782d0489fea5b3b05060cd36&=&format=webp&quality=lossless",
         "name": "Rusdi Alamak",
+        "rarity": "common",
+    },
+    {
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502359668599816444/image.png?ex=6a0015b9&is=69fec439&hm=ba6084832b69bcb7ee5c1ec2eb17d246e2896c888d98f14e8122bf7dc989b012&=&format=webp&quality=lossless",
+        "name": "Captain Amba",
+        "rarity": "common",
+    },
+    {
+        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXBzdXpqMDlpb3BoamtwMTFxN3hsaHc4cDNxc2dmYnY1amgxanljdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HQX3sliPpoxkcuOKiL/giphy.gif",
+        "name": "Yes King",
         "rarity": "common",
     },
     {
