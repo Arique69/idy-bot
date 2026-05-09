@@ -106,6 +106,11 @@ CARDS: list[dict] = [
         "rarity": "rare",
     },
     {
+        "url": "https://media.discordapp.net/attachments/1092800373640675368/1210145536494018570/lv_0_20230605193804.gif?ex=6a0045db&is=69fef45b&hm=a7840e07926583e92d23aa8787915f3ac79a5ba80784ca68c912267d55e36c14&=",
+        "name": "Gelombang Laut",
+        "rarity": "rare",
+    },
+    {
         "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9oryRGyTdzzFEBUgcb/giphy.gif",
         "name": "Amba Menangis",
         "rarity": "rare",
@@ -217,6 +222,16 @@ CARDS: list[dict] = [
     {
         "url": "https://media.discordapp.net/attachments/640554506525868082/1502359668599816444/image.png?ex=6a0015b9&is=69fec439&hm=ba6084832b69bcb7ee5c1ec2eb17d246e2896c888d98f14e8122bf7dc989b012&=&format=webp&quality=lossless",
         "name": "Captain Amba",
+        "rarity": "common",
+    },
+    {
+        "url": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Z2eGtyZ2xncWhydzZ0bjJ5ZTNsdmlmYW9lNXllNjBhdDB4dTd6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/v4kme8Y5rLzrKmZd6t/giphy.gif",
+        "name": "SHSC PSHT",
+        "rarity": "common",
+    },
+    {
+        "url": "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWcyd3hidTd0MW5lcmYybGo0cXZzdnJqMGpkdHliNXR5eDg4N2FocCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NZf1ETC4H1HNJouNt1/giphy.gif",
+        "name": "Kewer-Kewer Sopan",
         "rarity": "common",
     },
     {
