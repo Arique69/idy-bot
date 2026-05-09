@@ -14,15 +14,18 @@ Ketik **`idy`** di channel mana aja → bot reply dengan kartu gacha.
 
 | Rarity | Emoji | Drop Rate | Jumlah Kartu |
 |--------|-------|-----------|--------------|
-| Common | ⚪ | 23% | 12 |
-| Rare | 🔵 | 23% | 7 |
-| Epic | 🟣 | 23% | 4 |
-| Legendary | 🟡 | 23% | 3 |
-| Mythic | 🔴 | 8% | 1 |
-| **Total** | | **100%** | **27** |
+| Common | ⚪ | 50% | 21 |
+| Rare | 🔵 | 25% | 11 |
+| Epic | 🟣 | 15% | 8 |
+| Legendary | 🟡 | 8% | 6 |
+| Mythic | 🔴 | 2% | 4 |
+| **Total** | | **100%** | **50** |
 
 ### Pity System
 Kalau dapet **Common 3x berturut-turut**, pull berikutnya dijamin **Rare ke atas**. Footer embed bakal muncul `🍀 Pity activated!` kalau pity aktif.
+
+### Cooldown
+Setiap user ada cooldown **60 detik** per pull.
 
 ---
 
@@ -32,6 +35,14 @@ Kalau dapet **Common 3x berturut-turut**, pull berikutnya dijamin **Rare ke atas
 |---------|--------|
 | `/koleksi` | Lihat semua kartu unik yang pernah kamu dapet, dikelompokkan per rarity |
 | `/leaderboard` | Top 5 user dengan kartu Legendary & Mythic terbanyak |
+| `/rates` | Lihat persentase drop rate tiap rarity beserta jumlah kartunya |
+| `/kartu <nama>` | Preview kartu tertentu (dengan autocomplete) |
+| `/duel <user>` | Adu kartu sama user lain — kartu diacak, rarity tertinggi menang |
+| `/duelstats [user]` | Lihat statistik duel (menang/kalah/seri/winrate) |
+| `/duelleaderboard` | Top 5 duelist dengan menang terbanyak |
+| `/trade <user> <kartu_kamu> <kartu_dia>` | Tawarkan trade kartu ke user lain (butuh konfirmasi) |
+| `/gift <user> <kartu>` | Kasih kartu duplikat ke user lain (harus punya lebih dari 1) |
+| `/saham <ticker>` | Cek harga saham IDX (BBCA, TLKM) atau US (AAPL, TSLA) |
 | `/cuaca` | Cek cuaca hari ini di Jakarta |
 
 ---
