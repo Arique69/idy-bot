@@ -171,6 +171,11 @@ CARDS: list[dict] = [
         "name": "Terompet Pemanggil Pasukan",
         "rarity": "epic",
     },
+    {
+        "url": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN240dW9iMWU3MTM1amMxaHdhOWNzdHhhbm5hMmcyanJvcjg3NXhreiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XFzGF2ZoTjlKdKmaGf/giphy.gif",
+        "name": "Owo Sigma",
+        "rarity": "epic",
+    },
     # --- Legendary 🟡 ---
     {
         "url": "https://media.discordapp.net/attachments/640554506525868082/1502367899938066503/tirai_emas.gif?ex=69ff74a3&is=69fe2323&hm=0c00be9160f114e8b6496044afa7c09de292045f834c9625e88bf14c6d8a42cb&=",
@@ -197,6 +202,16 @@ CARDS: list[dict] = [
     {
         "url": "https://media.discordapp.net/attachments/640554506525868082/1502362384562393138/1e9cc19e8ab2ae01baa1c70ca3a0012d.png?ex=69ff6f81&is=69fe1e01&hm=6352cee0657bb0cf3ecc69be37209f218534f9bf782d0489fea5b3b05060cd36&=&format=webp&quality=lossless",
         "name": "Rusdi Alamak",
+        "rarity": "common",
+    },
+    {
+        "url": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTc1MjFneGcybDFueTZ1cHMweWRtOGlyaXNwbjk0dm9hZmhzeXp5YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2NVFMngAeelJvabc9W/giphy.gif",
+        "name": "Ladesh Pelatihan Ketat",
+        "rarity": "common",
+    },
+    {
+        "url": "https://media.discordapp.net/attachments/640554506525868082/1502694339296628776/Screenshot_20260509_222902_TikTok.jpg?ex=6a00a4a9&is=69ff5329&hm=04beb41a44a028780e050dd4407128669bbd0b16face711f0db4c8694deee967&=&format=webp",
+        "name": "Amba Gua Lagi Yang Kena",
         "rarity": "common",
     },
     # --- Mythic 🔴 ---
