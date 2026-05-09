@@ -261,7 +261,7 @@ CARDS: list[dict] = [
         "rarity": "mythic",
     },
     {
-        "url": "https://media.discordapp.net/attachments/640554506525868082/1502362704214622340/RGB.gif?ex=69ff6fcd&is=69fe1e4d&hm=94c5b515e756c016de41b4fd017d5c49b3347fb3dc275f6012937b7abb13a8b9&=",
+        "url": "https://media.discordapp.net/attachments/1224139598255624252/1466400312376950926/RGB.gif?ex=6a007136&is=69ff1fb6&hm=ea4cb5e8fe93b5932a6f7d55fde24101af37857bb48d5213e120c60e46aa4c98&",
         "name": "Linggis RGB",
         "rarity": "mythic",
     },
