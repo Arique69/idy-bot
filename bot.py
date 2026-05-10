@@ -410,23 +410,27 @@ class IdyBot(discord.Client):
 
             save_data(data)
 
-            embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
-            embed.add_field(
-                name=f"{interaction.user.display_name}",
-                value=f"{cfg_a['emoji']} **{card_a['name']}**\n`{cfg_a['label']}`\n⚡ {power_a}",
-                inline=True,
-            )
-            embed.add_field(name="VS", value="⚔️", inline=True)
-            embed.add_field(
-                name=f"{lawan.display_name}",
-                value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`\n⚡ {power_b}",
-                inline=True,
-            )
             pct_a = win_chance_a * 100
             pct_b = 100 - pct_a
-            embed.set_footer(text=f"Peluang menang: {pct_a:.1f}% vs {pct_b:.1f}% • Kartu diambil dari koleksi")
 
-            await interaction.response.send_message(embed=embed)
+            embed_a = discord.Embed(
+                title=f"{interaction.user.display_name}",
+                description=f"{cfg_a['emoji']} **{card_a['name']}**\n`{cfg_a['label']}`\n⚡ {power_a}",
+                color=cfg_a["color"],
+            )
+            embed_a.set_image(url=card_a["url"])
+
+            embed_b = discord.Embed(
+                title=f"{lawan.display_name}",
+                description=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`\n⚡ {power_b}",
+                color=cfg_b["color"],
+            )
+            embed_b.set_image(url=card_b["url"])
+
+            embed_result = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
+            embed_result.set_footer(text=f"Peluang menang: {pct_a:.1f}% vs {pct_b:.1f}% • Kartu diambil dari koleksi")
+
+            await interaction.response.send_message(embeds=[embed_a, embed_b, embed_result])
 
         @self.tree.command(name="duelstats", description="Lihat statistik duel kamu atau user lain")
         @app_commands.describe(user="User yang mau dilihat statsnya (kosongkan untuk stats kamu sendiri)")
