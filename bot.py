@@ -681,6 +681,8 @@ class IdyBot(discord.Client):
 
             next_rarity = RARITY_NEXT[card_obj["rarity"]]
             pool = [c for c in CARDS if c["rarity"] == next_rarity]
+            if not pool:
+                pool = CARDS
             result_card = random.choice(pool)
             user["collection"][result_card["name"]] = user["collection"].get(result_card["name"], 0) + 1
 
