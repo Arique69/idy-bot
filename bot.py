@@ -34,8 +34,6 @@ _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
 COOLDOWN_SECONDS = 60
 _cooldowns: dict[int, float] = {}
 
-RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic"]
-
 GUILD = discord.Object(id=490175609587105802)
 
 
