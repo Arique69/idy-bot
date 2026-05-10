@@ -1,0 +1,5 @@
+⚡ **Power System** — Setiap kartu sekarang punya stat Power! Kartu langka makin kuat.
+
+⚔️ **Duel Upgrade** — Duel sekarang pakai kartu dari koleksi kamu sendiri. Menang ditentukan berdasarkan Power, bukan cuma rarity. Kartu pemenang juga ditampilkan sekarang!
+
+🔀 **Command Baru: /merge** — Punya kartu duplikat? Gabungin 2 kartu (minimal punya 3) buat dapet kartu random rarity lebih tinggi. Common → Rare → Epic → Legendary → Mythic!
