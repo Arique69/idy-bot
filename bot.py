@@ -412,9 +412,6 @@ class IdyBot(discord.Client):
 
             save_data(data)
 
-            pct_a = win_chance_a * 100
-            pct_b = 100 - pct_a
-
             embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
             embed.add_field(
                 name=f"{interaction.user.display_name}",
