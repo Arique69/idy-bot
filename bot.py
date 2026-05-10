@@ -76,15 +76,15 @@ def pull_card(user_id: int) -> tuple[dict, bool]:
     return card, is_pity
 
 
-def pull_card_simple() -> dict:
-    """Pull a card without affecting user data (for duel)."""
-    rarities = list(RARITY_CONFIG.keys())
-    weights = [RARITY_CONFIG[r]["weight"] for r in rarities]
-    chosen_rarity = random.choices(rarities, weights=weights, k=1)[0]
-    pool = [c for c in CARDS if c["rarity"] == chosen_rarity]
-    if not pool:
-        pool = CARDS
-    return random.choice(pool)
+def get_random_collection_card(user_id: int) -> dict | None:
+    """Return a random card dict from the user's collection, or None if empty."""
+    data = load_data()
+    user = get_user(data, str(user_id))
+    owned = [name for name, count in user.get("collection", {}).items() if count > 0]
+    if not owned:
+        return None
+    card_name = random.choice(owned)
+    return next((c for c in CARDS if c["name"] == card_name), None)
 
 
 def contains_trigger(text: str) -> bool:
@@ -374,11 +374,23 @@ class IdyBot(discord.Client):
                 await interaction.response.send_message("Ga bisa duel sama diri sendiri!", ephemeral=True)
                 return
 
-            card_a = pull_card_simple()
-            card_b = pull_card_simple()
+            card_a = get_random_collection_card(interaction.user.id)
+            card_b = get_random_collection_card(lawan.id)
 
-            rank_a = RARITY_ORDER.index(card_a["rarity"])
-            rank_b = RARITY_ORDER.index(card_b["rarity"])
+            if card_a is None:
+                await interaction.response.send_message(
+                    "Kamu belum punya kartu! Ketik `idy` buat dapet kartu dulu.", ephemeral=True
+                )
+                return
+            if card_b is None:
+                await interaction.response.send_message(
+                    f"**{lawan.display_name}** belum punya kartu!", ephemeral=True
+                )
+                return
+
+            power_a = card_a.get("power", 100)
+            power_b = card_b.get("power", 100)
+            win_chance_a = power_a / (power_a + power_b)
 
             cfg_a = RARITY_CONFIG[card_a["rarity"]]
             cfg_b = RARITY_CONFIG[card_b["rarity"]]
@@ -387,37 +399,37 @@ class IdyBot(discord.Client):
             user_a = get_user(data, str(interaction.user.id))
             user_b = get_user(data, str(lawan.id))
 
-            if rank_a > rank_b:
+            if random.random() < win_chance_a:
                 result = f"🏆 **{interaction.user.display_name}** menang!"
                 color = 0x2ecc71
                 user_a["duel_wins"] += 1
                 user_b["duel_losses"] += 1
-            elif rank_b > rank_a:
+            else:
                 result = f"🏆 **{lawan.display_name}** menang!"
                 color = 0xe74c3c
                 user_b["duel_wins"] += 1
                 user_a["duel_losses"] += 1
-            else:
-                result = "🤝 **Seri!**"
-                color = 0x95a5a6
-                user_a["duel_draws"] += 1
-                user_b["duel_draws"] += 1
 
             save_data(data)
+
+            pct_a = win_chance_a * 100
+            pct_b = 100 - pct_a
 
             embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
             embed.add_field(
                 name=f"{interaction.user.display_name}",
-                value=f"{cfg_a['emoji']} **{card_a['name']}**\n`{cfg_a['label']}`",
+                value=f"{cfg_a['emoji']} **{card_a['name']}**\n`{cfg_a['label']}`\n⚡ {power_a}",
                 inline=True,
             )
             embed.add_field(name="VS", value="⚔️", inline=True)
             embed.add_field(
                 name=f"{lawan.display_name}",
-                value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`",
+                value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`\n⚡ {power_b}",
                 inline=True,
             )
-            embed.set_footer(text="Kartu duel tidak masuk koleksi")
+            pct_a = win_chance_a * 100
+            pct_b = 100 - pct_a
+            embed.set_footer(text=f"Peluang menang: {pct_a:.1f}% vs {pct_b:.1f}% • Kartu diambil dari koleksi")
 
             await interaction.response.send_message(embed=embed)
 
