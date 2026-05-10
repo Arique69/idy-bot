@@ -427,6 +427,7 @@ class IdyBot(discord.Client):
                 value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`\n⚡ {power_b}",
                 inline=True,
             )
+            embed.add_field(name="🏆 Winner Card", value=winner_card["name"], inline=False)
             embed.set_image(url=winner_card["url"])
             embed.set_footer(text=f"Peluang menang: {pct_a:.1f}% vs {pct_b:.1f}% • Kartu diambil dari koleksi")
 
