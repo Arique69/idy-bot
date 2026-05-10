@@ -744,6 +744,13 @@ class IdyBot(discord.Client):
         channel = self.get_channel(854900758713073686)
         if channel:
             await channel.send("🔄 Bot updated and back online!")
+            announce_file = "announce.txt"
+            if os.path.exists(announce_file):
+                with open(announce_file, "r", encoding="utf-8") as f:
+                    announcement = f.read().strip()
+                if announcement:
+                    await channel.send(f"📢 **Update:**\n{announcement}")
+                os.remove(announce_file)
 
     async def on_message(self, message: discord.Message) -> None:
         if message.author.bot:
