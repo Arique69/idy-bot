@@ -741,6 +741,9 @@ class IdyBot(discord.Client):
             name="Jomok Hepi",
         )
         await self.change_presence(activity=activity)
+        channel = self.get_channel(854900758713073686)
+        if channel:
+            await channel.send("🔄 Bot updated and back online!")
 
     async def on_message(self, message: discord.Message) -> None:
         if message.author.bot:
