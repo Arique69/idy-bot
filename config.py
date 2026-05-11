@@ -100,6 +100,12 @@ CARDS: list[dict] = [
     },
     # --- Rare 🔵 ---
     {
+        "url": "https://images-ext-1.discordapp.net/external/Dd-z3ontuClF8E86MQhtdFZ0jCy6mGdHfZTZc0Dk7p8/https/i.pinimg.com/474x/70/68/b2/7068b215a3b47573850c3d0d82536e2b.jpg?format=webp",
+        "name": "Spongebob Tuff",
+        "rarity": "rare",
+        "power": 250,
+    },
+    {
         "url": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGdwc3NlOWRndG90bm54c2VhanFscGJheWV5dG9nZzI2NGNyd25lYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/H7oe4YDsrMbNuzCF1g/giphy.gif",
         "name": "Idy Dame yo",
         "rarity": "rare",
@@ -166,6 +172,12 @@ CARDS: list[dict] = [
         "power": 250,
     },
     # --- Epic 🟣 ---
+    {
+        "url": "https://media.discordapp.net/attachments/854900758713073686/1503262835097079988/20260511_120716.jpg?ex=6a02b61d&is=6a01649d&hm=6bc6de35e32b58192516ed3f28da148ed709a31bad6e3b9796dbeae0a08c680d&=&format=webp",
+        "name": "Rusdi Balon",
+        "rarity": "epic",
+        "power": 450,
+    },
     {
         "url": "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dnR5OGp4ejB6Ymh6Z2szMnU2NHNoMzRveGlvZW5rMWgyZDZkcnY5ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/eKwa7OVMk0Cqx8g8b5/giphy.gif",
         "name": "Mahkota Mu King",
