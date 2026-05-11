@@ -100,6 +100,12 @@ CARDS: list[dict] = [
     },
     # --- Rare 🔵 ---
     {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503408211427065876/FB_IMG_1703546913367.jpg?ex=6a033d81&is=6a01ec01&hm=64b0a12f2aa9700ba1d0dadc94d88c3b67cf58c82aff09475a5c4a8bb09b9963&=&format=webp",
+        "name": "Laba-laba Sunda",
+        "rarity": "rare",
+        "power": 250,
+    },
+    {
         "url": "https://images-ext-1.discordapp.net/external/Dd-z3ontuClF8E86MQhtdFZ0jCy6mGdHfZTZc0Dk7p8/https/i.pinimg.com/474x/70/68/b2/7068b215a3b47573850c3d0d82536e2b.jpg?format=webp",
         "name": "Spongebob Tuff",
         "rarity": "rare",
@@ -173,6 +179,12 @@ CARDS: list[dict] = [
     },
     # --- Epic 🟣 ---
     {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503408211896832170/456311363_1557874248491360_5963625286855722935_n.jpg?ex=6a033d81&is=6a01ec01&hm=8ea5623b03744febb10b4d3b653cd8de0f4cd062447be068af3592da492a2040&=&format=webp",
+        "name": "Kenapa?",
+        "rarity": "epic",
+        "power": 450,
+    },
+    {
         "url": "https://media.discordapp.net/attachments/854900758713073686/1503262835097079988/20260511_120716.jpg?ex=6a02b61d&is=6a01649d&hm=6bc6de35e32b58192516ed3f28da148ed709a31bad6e3b9796dbeae0a08c680d&=&format=webp",
         "name": "Rusdi Balon",
         "rarity": "epic",
@@ -227,6 +239,12 @@ CARDS: list[dict] = [
         "power": 450,
     },
     # --- Legendary 🟡 ---
+    {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503408212253212762/244433a305a15c1c98f5068f3d63500f.jpg?ex=6a033d81&is=6a01ec01&hm=9b568fa4d9c602df08dd62c097971de8e36896bfe547da8822c830af6b1ea37a&=&format=webp",
+        "name": "Merah",
+        "rarity": "legendary",
+        "power": 700,
+    },
     {
         "url": "https://media.discordapp.net/attachments/640554506525868082/1502367899938066503/tirai_emas.gif?ex=69ff74a3&is=69fe2323&hm=0c00be9160f114e8b6496044afa7c09de292045f834c9625e88bf14c6d8a42cb&=",
         "name": "Tirai Misterius",
