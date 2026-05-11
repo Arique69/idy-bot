@@ -1,5 +1,6 @@
-⚡ **Power System** — Setiap kartu sekarang punya stat Power! Kartu langka makin kuat.
+🃏 **Kartu Baru Telah Ditambahkan!**
 
-⚔️ **Duel Upgrade** — Duel sekarang pakai kartu dari koleksi kamu sendiri. Menang ditentukan berdasarkan Power, bukan cuma rarity. Kartu pemenang juga ditampilkan sekarang!
+🟣 **Rusdi Balon** — Epic (Power: 450)
+🔵 **Spongebob Tuff** — Rare (Power: 250)
 
-🔀 **Command Baru: /merge** — Punya kartu duplikat? Gabungin 2 kartu (minimal punya 3) buat dapet kartu random rarity lebih tinggi. Common → Rare → Epic → Legendary → Mythic!
+Coba peruntungan kamu dan dapetin kartu barunya! 🎴
