@@ -100,6 +100,24 @@ CARDS: list[dict] = [
     },
     # --- Rare 🔵 ---
     {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503411763708821574/20231228_121857.jpg?ex=6a0340d0&is=6a01ef50&hm=f688750645b474c61cbf1d72e0d9b8ff1680361300e256287848e891d3c9fde2&=&format=webp&width=856&height=856",
+        "name": "Bertolak Belakang",
+        "rarity": "rare",
+        "power": 250,
+    },
+    {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503411765927477328/403857969_863969445206569_2607206982726272483_n.jpg?ex=6a0340d1&is=6a01ef51&hm=d9d3a5332d0413e55a55ee0092868d94f38c750f327d244b20fb55e2558c33a3&=&format=webp",
+        "name": "Bercyanda",
+        "rarity": "rare",
+        "power": 250,
+    },
+    {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503411779689119774/20077647deaae862fa5b259b6772f41f.jpg?ex=6a0340d4&is=6a01ef54&hm=997d236138d17d543d36fc75222f37ff51822b98ae7f972824e7d793b7df69c1&=&format=webp",
+        "name": "Bodo Amat",
+        "rarity": "rare",
+        "power": 250,
+    },
+    {
         "url": "https://media.discordapp.net/attachments/706813419705335920/1503408211427065876/FB_IMG_1703546913367.jpg?ex=6a033d81&is=6a01ec01&hm=64b0a12f2aa9700ba1d0dadc94d88c3b67cf58c82aff09475a5c4a8bb09b9963&=&format=webp",
         "name": "Laba-laba Sunda",
         "rarity": "rare",
@@ -179,6 +197,12 @@ CARDS: list[dict] = [
     },
     # --- Epic 🟣 ---
     {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503411783057281235/20231003_022337.jpg?ex=6a0340d5&is=6a01ef55&hm=9273401c6c82a09a757a748b4199f44bb31c13b71d65c8f5057106746b87bc30&=&format=webp&width=1512&height=856",
+        "name": "Sodara",
+        "rarity": "epic",
+        "power": 450,
+    },
+    {
         "url": "https://media.discordapp.net/attachments/706813419705335920/1503408211896832170/456311363_1557874248491360_5963625286855722935_n.jpg?ex=6a033d81&is=6a01ec01&hm=8ea5623b03744febb10b4d3b653cd8de0f4cd062447be068af3592da492a2040&=&format=webp",
         "name": "Kenapa?",
         "rarity": "epic",
@@ -239,6 +263,12 @@ CARDS: list[dict] = [
         "power": 450,
     },
     # --- Legendary 🟡 ---
+    {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503411783699005470/20231228_121847.jpg?ex=6a0340d5&is=6a01ef55&hm=4b4629b78608aff7172585e2a4affafdd8dbb9c1bdc5eb68a501e6159a2a55f0&=&format=webp",
+        "name": "Toyota Supra 2000HP BRAkTAKTAK",
+        "rarity": "legendary",
+        "power": 700,
+    },
     {
         "url": "https://media.discordapp.net/attachments/706813419705335920/1503408212253212762/244433a305a15c1c98f5068f3d63500f.jpg?ex=6a033d81&is=6a01ec01&hm=9b568fa4d9c602df08dd62c097971de8e36896bfe547da8822c830af6b1ea37a&=&format=webp",
         "name": "Merah",
