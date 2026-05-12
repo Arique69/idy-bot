@@ -584,8 +584,7 @@ class IdyBot(discord.Client):
 
             wins = udata.get("duel_wins", 0)
             losses = udata.get("duel_losses", 0)
-            draws = udata.get("duel_draws", 0)
-            total = wins + losses + draws
+            total = wins + losses
             winrate = (wins / total * 100) if total > 0 else 0
 
             embed = discord.Embed(
@@ -594,7 +593,6 @@ class IdyBot(discord.Client):
             )
             embed.add_field(name="🏆 Menang", value=str(wins), inline=True)
             embed.add_field(name="💀 Kalah", value=str(losses), inline=True)
-            embed.add_field(name="🤝 Seri", value=str(draws), inline=True)
             embed.add_field(name="📊 Total Duel", value=str(total), inline=True)
             embed.add_field(name="📈 Win Rate", value=f"{winrate:.1f}%", inline=True)
 
@@ -616,7 +614,6 @@ class IdyBot(discord.Client):
             for i, (uid, ud) in enumerate(ranked):
                 wins = ud.get("duel_wins", 0)
                 losses = ud.get("duel_losses", 0)
-                draws = ud.get("duel_draws", 0)
                 if wins == 0:
                     continue
                 try:
@@ -626,7 +623,7 @@ class IdyBot(discord.Client):
                     name = f"User {uid}"
                 embed.add_field(
                     name=f"{medals[i]} {name}",
-                    value=f"🏆 {wins} menang  💀 {losses} kalah  🤝 {draws} seri",
+                    value=f"🏆 {wins} menang  💀 {losses} kalah",
                     inline=False,
                 )
 
