@@ -216,65 +216,65 @@ class DuelModal(discord.ui.Modal, title="Pilih Kartu Duel"):
         cfg_a = RARITY_CONFIG[card_a["rarity"]]
         cfg_b = RARITY_CONFIG[card_b["rarity"]]
 
-        if rank_a > rank_b:
+        gap = abs(rank_a - rank_b)
+        if gap == 0:
+            win_chance_a = 0.5
+        else:
+            win_chance_a = max(0.05, 0.5 - gap * 0.15) if rank_a > rank_b else min(0.95, 0.5 + gap * 0.15)
+
+        challenger_wins = random.random() < win_chance_a
+
+        if challenger_wins:
             winner, loser = self.challenger, self.target
             winner_gets, loser_loses = real_name_b, self.card_name_a
             result = f"🏆 **{self.challenger.display_name}** menang!"
             color = 0x2ecc71
-        elif rank_b > rank_a:
+        else:
             winner, loser = self.target, self.challenger
             winner_gets, loser_loses = self.card_name_a, real_name_b
             result = f"🏆 **{self.target.display_name}** menang!"
             color = 0xe74c3c
-        else:
-            winner = loser = None
-            winner_gets = loser_loses = None
-            result = "🤝 **Seri! Tidak ada kartu yang berpindah.**"
-            color = 0x95a5a6
 
-        if winner and loser:
-            user_winner = get_user(data, str(winner.id))
-            user_loser = get_user(data, str(loser.id))
+        pct_a = win_chance_a * 100
+        pct_b = 100 - pct_a
 
-            user_loser["collection"][loser_loses] -= 1
-            if user_loser["collection"][loser_loses] <= 0:
-                del user_loser["collection"][loser_loses]
-            user_winner["collection"][winner_gets] = user_winner["collection"].get(winner_gets, 0) + 1
+        user_winner = get_user(data, str(winner.id))
+        user_loser = get_user(data, str(loser.id))
 
-            user_winner["duel_wins"] = user_winner.get("duel_wins", 0) + 1
-            user_loser["duel_losses"] = user_loser.get("duel_losses", 0) + 1
+        user_loser["collection"][loser_loses] -= 1
+        if user_loser["collection"][loser_loses] <= 0:
+            del user_loser["collection"][loser_loses]
+        user_winner["collection"][winner_gets] = user_winner["collection"].get(winner_gets, 0) + 1
 
-            card_won = next((c for c in CARDS if c["name"] == winner_gets), None)
-            if card_won:
-                if card_won["rarity"] == "legendary":
-                    user_winner["legendary_count"] = user_winner.get("legendary_count", 0) + 1
-                elif card_won["rarity"] == "mythic":
-                    user_winner["mythic_count"] = user_winner.get("mythic_count", 0) + 1
+        user_winner["duel_wins"] = user_winner.get("duel_wins", 0) + 1
+        user_loser["duel_losses"] = user_loser.get("duel_losses", 0) + 1
 
-            save_data(data)
-        else:
-            user_a["duel_draws"] = user_a.get("duel_draws", 0) + 1
-            user_b["duel_draws"] = user_b.get("duel_draws", 0) + 1
-            save_data(data)
+        card_won = next((c for c in CARDS if c["name"] == winner_gets), None)
+        if card_won:
+            if card_won["rarity"] == "legendary":
+                user_winner["legendary_count"] = user_winner.get("legendary_count", 0) + 1
+            elif card_won["rarity"] == "mythic":
+                user_winner["mythic_count"] = user_winner.get("mythic_count", 0) + 1
+
+        save_data(data)
 
         embed = discord.Embed(title="⚔️ HASIL DUEL!", description=result, color=color)
         embed.add_field(
             name=f"{self.challenger.display_name}",
-            value=f"{cfg_a['emoji']} **{self.card_name_a}**\n`{cfg_a['label']}`",
+            value=f"{cfg_a['emoji']} **{self.card_name_a}**\n`{cfg_a['label']}`\n🎲 {pct_a:.0f}%",
             inline=True,
         )
         embed.add_field(name="VS", value="⚔️", inline=True)
         embed.add_field(
             name=f"{self.target.display_name}",
-            value=f"{cfg_b['emoji']} **{real_name_b}**\n`{cfg_b['label']}`",
+            value=f"{cfg_b['emoji']} **{real_name_b}**\n`{cfg_b['label']}`\n🎲 {pct_b:.0f}%",
             inline=True,
         )
-        if winner and winner_gets:
-            embed.add_field(
-                name="Perpindahan Kartu",
-                value=f"**{winner.display_name}** mendapat **{winner_gets}** dari **{loser.display_name}**!",
-                inline=False,
-            )
+        embed.add_field(
+            name="Perpindahan Kartu",
+            value=f"**{winner.display_name}** mendapat **{winner_gets}** dari **{loser.display_name}**!",
+            inline=False,
+        )
 
         await interaction.response.edit_message(content=None, embed=embed, view=None)
         self.duel_view.stop()
