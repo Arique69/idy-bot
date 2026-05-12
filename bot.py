@@ -389,8 +389,14 @@ class IdyBot(discord.Client):
                 await interaction.response.send_message("Ga bisa duel sama diri sendiri!", ephemeral=True)
                 return
 
-            card_a = pull_card_simple()
-            card_b = pull_card_simple()
+            card_a = get_random_collection_card(interaction.user.id)
+            if not card_a:
+                await interaction.response.send_message("Kamu belum punya kartu!", ephemeral=True)
+                return
+            card_b = get_random_collection_card(lawan.id)
+            if not card_b:
+                await interaction.response.send_message(f"**{lawan.display_name}** belum punya kartu!", ephemeral=True)
+                return
 
             rank_a = RARITY_ORDER.index(card_a["rarity"])
             rank_b = RARITY_ORDER.index(card_b["rarity"])
