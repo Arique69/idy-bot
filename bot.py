@@ -415,11 +415,13 @@ class IdyBot(discord.Client):
             if a_wins:
                 result = f"🏆 **{interaction.user.display_name}** menang!"
                 color = 0x2ecc71
+                winner_card = card_a
                 user_a["duel_wins"] = user_a.get("duel_wins", 0) + 1
                 user_b["duel_losses"] = user_b.get("duel_losses", 0) + 1
             else:
                 result = f"🏆 **{lawan.display_name}** menang!"
                 color = 0xe74c3c
+                winner_card = card_b
                 user_b["duel_wins"] = user_b.get("duel_wins", 0) + 1
                 user_a["duel_losses"] = user_a.get("duel_losses", 0) + 1
 
@@ -439,6 +441,7 @@ class IdyBot(discord.Client):
                 value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`\n🎲 {pct_b:.0f}%",
                 inline=True,
             )
+            embed.set_image(url=winner_card["url"])
             embed.set_footer(text="Kartu duel tidak masuk koleksi")
 
             await interaction.response.send_message(embed=embed)
