@@ -34,6 +34,8 @@ _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
 COOLDOWN_SECONDS = 60
 _cooldowns: dict[int, float] = {}
 
+RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic"]
+
 RARITY_NEXT = {
     "common": "rare",
     "rare": "epic",
@@ -82,7 +84,6 @@ def pull_card(user_id: int) -> tuple[dict, bool]:
 
 
 def get_random_collection_card(user_id: int) -> dict | None:
-    """Return a random card dict from the user's collection, or None if empty."""
     data = load_data()
     user = get_user(data, str(user_id))
     owned = [name for name, count in user.get("collection", {}).items() if count > 0]
@@ -163,6 +164,155 @@ class TradeView(discord.ui.View):
             item.disabled = True  # type: ignore
         if self.message:
             await self.message.edit(content="⏰ Trade expired.", view=self)
+
+
+class DuelModal(discord.ui.Modal, title="Pilih Kartu Duel"):
+    kartu_input = discord.ui.TextInput(
+        label="Nama kartu yang mau kamu taruhkan",
+        placeholder="Ketik nama kartu persis...",
+        min_length=1,
+        max_length=100,
+    )
+
+    def __init__(self, challenger: discord.Member, target: discord.Member, card_name_a: str, view: "DuelChallengeView") -> None:
+        super().__init__(timeout=60)
+        self.challenger = challenger
+        self.target = target
+        self.card_name_a = card_name_a
+        self.duel_view = view
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        card_name_b = self.kartu_input.value.strip()
+
+        data = load_data()
+        user_a = get_user(data, str(self.challenger.id))
+        user_b = get_user(data, str(self.target.id))
+
+        if user_a["collection"].get(self.card_name_a, 0) < 1:
+            await interaction.response.edit_message(
+                content=f"❌ Duel batal — **{self.challenger.display_name}** udah ga punya **{self.card_name_a}**.",
+                embed=None, view=None,
+            )
+            self.duel_view.stop()
+            return
+
+        card_b = next((c for c in CARDS if c["name"].lower() == card_name_b.lower()), None)
+        if not card_b:
+            await interaction.response.send_message(
+                f"Kartu **{card_name_b}** tidak ditemukan. Cek nama kartunya ya.", ephemeral=True
+            )
+            return
+
+        real_name_b = card_b["name"]
+        if user_b["collection"].get(real_name_b, 0) < 1:
+            await interaction.response.send_message(
+                f"Kamu ga punya kartu **{real_name_b}**!", ephemeral=True
+            )
+            return
+
+        card_a = next((c for c in CARDS if c["name"] == self.card_name_a), None)
+        rank_a = RARITY_ORDER.index(card_a["rarity"])
+        rank_b = RARITY_ORDER.index(card_b["rarity"])
+        cfg_a = RARITY_CONFIG[card_a["rarity"]]
+        cfg_b = RARITY_CONFIG[card_b["rarity"]]
+
+        if rank_a > rank_b:
+            winner, loser = self.challenger, self.target
+            winner_gets, loser_loses = real_name_b, self.card_name_a
+            result = f"🏆 **{self.challenger.display_name}** menang!"
+            color = 0x2ecc71
+        elif rank_b > rank_a:
+            winner, loser = self.target, self.challenger
+            winner_gets, loser_loses = self.card_name_a, real_name_b
+            result = f"🏆 **{self.target.display_name}** menang!"
+            color = 0xe74c3c
+        else:
+            winner = loser = None
+            winner_gets = loser_loses = None
+            result = "🤝 **Seri! Tidak ada kartu yang berpindah.**"
+            color = 0x95a5a6
+
+        if winner and loser:
+            user_winner = get_user(data, str(winner.id))
+            user_loser = get_user(data, str(loser.id))
+
+            user_loser["collection"][loser_loses] -= 1
+            if user_loser["collection"][loser_loses] <= 0:
+                del user_loser["collection"][loser_loses]
+            user_winner["collection"][winner_gets] = user_winner["collection"].get(winner_gets, 0) + 1
+
+            user_winner["duel_wins"] = user_winner.get("duel_wins", 0) + 1
+            user_loser["duel_losses"] = user_loser.get("duel_losses", 0) + 1
+
+            card_won = next((c for c in CARDS if c["name"] == winner_gets), None)
+            if card_won:
+                if card_won["rarity"] == "legendary":
+                    user_winner["legendary_count"] = user_winner.get("legendary_count", 0) + 1
+                elif card_won["rarity"] == "mythic":
+                    user_winner["mythic_count"] = user_winner.get("mythic_count", 0) + 1
+
+            save_data(data)
+        else:
+            user_a["duel_draws"] = user_a.get("duel_draws", 0) + 1
+            user_b["duel_draws"] = user_b.get("duel_draws", 0) + 1
+            save_data(data)
+
+        embed = discord.Embed(title="⚔️ HASIL DUEL!", description=result, color=color)
+        embed.add_field(
+            name=f"{self.challenger.display_name}",
+            value=f"{cfg_a['emoji']} **{self.card_name_a}**\n`{cfg_a['label']}`",
+            inline=True,
+        )
+        embed.add_field(name="VS", value="⚔️", inline=True)
+        embed.add_field(
+            name=f"{self.target.display_name}",
+            value=f"{cfg_b['emoji']} **{real_name_b}**\n`{cfg_b['label']}`",
+            inline=True,
+        )
+        if winner and winner_gets:
+            embed.add_field(
+                name="Perpindahan Kartu",
+                value=f"**{winner.display_name}** mendapat **{winner_gets}** dari **{loser.display_name}**!",
+                inline=False,
+            )
+
+        await interaction.response.edit_message(content=None, embed=embed, view=None)
+        self.duel_view.stop()
+
+
+class DuelChallengeView(discord.ui.View):
+    def __init__(self, challenger: discord.Member, target: discord.Member, card_name_a: str) -> None:
+        super().__init__(timeout=60)
+        self.challenger = challenger
+        self.target = target
+        self.card_name_a = card_name_a
+        self.message: discord.Message | None = None
+
+    @discord.ui.button(label="⚔️ Terima", style=discord.ButtonStyle.green)
+    async def accept(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if interaction.user.id != self.target.id:
+            await interaction.response.send_message("Bukan kamu yang ditantang!", ephemeral=True)
+            return
+        modal = DuelModal(self.challenger, self.target, self.card_name_a, self)
+        await interaction.response.send_modal(modal)
+
+    @discord.ui.button(label="❌ Tolak", style=discord.ButtonStyle.red)
+    async def decline(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if interaction.user.id != self.target.id:
+            await interaction.response.send_message("Bukan kamu yang ditantang!", ephemeral=True)
+            return
+        for item in self.children:
+            item.disabled = True  # type: ignore
+        await interaction.response.edit_message(
+            content=f"❌ Duel ditolak oleh **{self.target.display_name}**.", embed=None, view=self
+        )
+        self.stop()
+
+    async def on_timeout(self) -> None:
+        for item in self.children:
+            item.disabled = True  # type: ignore
+        if self.message:
+            await self.message.edit(content="⏰ Tantangan duel expired.", embed=None, view=self)
 
 
 def _build_card_embed(card: dict, is_pity: bool = False) -> discord.Embed:
@@ -272,7 +422,7 @@ class IdyBot(discord.Client):
         async def koleksi(interaction: discord.Interaction) -> None:
             data = load_data()
             user = get_user(data, str(interaction.user.id))
-            collection = user.get("collection", [])
+            collection = user.get("collection", {})
 
             if not collection:
                 await interaction.response.send_message("Koleksi kamu masih kosong! Ketik `idy` buat pull.")
@@ -369,9 +519,9 @@ class IdyBot(discord.Client):
                 log.error("Error fetching stock %s: %s", ticker, exc)
                 await interaction.followup.send("Gagal ngambil data saham, coba lagi nanti.")
 
-        @self.tree.command(name="duel", description="Adu kartu sama user lain")
-        @app_commands.describe(lawan="User yang mau diajak duel")
-        async def duel(interaction: discord.Interaction, lawan: discord.Member) -> None:
+        @self.tree.command(name="duel", description="Adu kartu koleksi kamu — kartu yang kalah berpindah tangan!")
+        @app_commands.describe(lawan="User yang mau diajak duel", kartu="Kartu kamu yang mau ditaruhkan")
+        async def duel(interaction: discord.Interaction, lawan: discord.Member, kartu: str) -> None:
             if lawan.bot:
                 await interaction.response.send_message("Ga bisa duel sama bot!", ephemeral=True)
                 return
@@ -379,66 +529,51 @@ class IdyBot(discord.Client):
                 await interaction.response.send_message("Ga bisa duel sama diri sendiri!", ephemeral=True)
                 return
 
-            card_a = get_random_collection_card(interaction.user.id)
-            card_b = get_random_collection_card(lawan.id)
-
-            if card_a is None:
-                await interaction.response.send_message(
-                    "Kamu belum punya kartu! Ketik `idy` buat dapet kartu dulu.", ephemeral=True
-                )
-                return
-            if card_b is None:
-                await interaction.response.send_message(
-                    f"**{lawan.display_name}** belum punya kartu!", ephemeral=True
-                )
-                return
-
-            power_a = card_a.get("power", 100)
-            power_b = card_b.get("power", 100)
-            win_chance_a = power_a / (power_a + power_b)
-
-            cfg_a = RARITY_CONFIG[card_a["rarity"]]
-            cfg_b = RARITY_CONFIG[card_b["rarity"]]
-
             data = load_data()
             user_a = get_user(data, str(interaction.user.id))
-            user_b = get_user(data, str(lawan.id))
+            if user_a["collection"].get(kartu, 0) < 1:
+                await interaction.response.send_message(f"Kamu ga punya kartu **{kartu}**!", ephemeral=True)
+                return
 
-            if random.random() < win_chance_a:
-                result = f"🏆 **{interaction.user.display_name}** menang!"
-                color = 0x2ecc71
-                user_a["duel_wins"] += 1
-                user_b["duel_losses"] += 1
-            else:
-                result = f"🏆 **{lawan.display_name}** menang!"
-                color = 0xe74c3c
-                user_b["duel_wins"] += 1
-                user_a["duel_losses"] += 1
+            card_a = next((c for c in CARDS if c["name"] == kartu), None)
+            if not card_a:
+                await interaction.response.send_message(f"Kartu **{kartu}** tidak ditemukan.", ephemeral=True)
+                return
 
-            save_data(data)
+            cfg_a = RARITY_CONFIG[card_a["rarity"]]
 
-            winner_card = card_a if color == 0x2ecc71 else card_b
-
-            pct_a = win_chance_a * 100
-            pct_b = 100 - pct_a
-
-            embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
-            embed.add_field(
-                name=f"{interaction.user.display_name}",
-                value=f"{cfg_a['emoji']} **{card_a['name']}**\n`{cfg_a['label']}`\n⚡ {power_a}",
-                inline=True,
+            view = DuelChallengeView(
+                challenger=interaction.user,
+                target=lawan,
+                card_name_a=kartu,
             )
-            embed.add_field(name="VS", value="⚔️", inline=True)
-            embed.add_field(
-                name=f"{lawan.display_name}",
-                value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`\n⚡ {power_b}",
-                inline=True,
+            embed = discord.Embed(
+                title="⚔️ Tantangan Duel!",
+                description=(
+                    f"{lawan.mention}, **{interaction.user.display_name}** menantang kamu duel!\n\n"
+                    f"Kalau kamu kalah, kartu kamu jadi milik dia — dan sebaliknya."
+                ),
+                color=0xe67e22,
             )
-            embed.add_field(name="🏆 Winner Card", value=winner_card["name"], inline=False)
-            embed.set_image(url=winner_card["url"])
-            embed.set_footer(text=f"Peluang menang: {pct_a:.1f}% vs {pct_b:.1f}% • Kartu diambil dari koleksi")
+            embed.add_field(
+                name=f"{interaction.user.display_name} taruh",
+                value=f"{cfg_a['emoji']} **{kartu}**\n`{cfg_a['label']}`",
+                inline=False,
+            )
+            embed.set_footer(text="Tantangan expire dalam 60 detik")
 
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, view=view)
+            view.message = await interaction.original_response()
+
+        @duel.autocomplete("kartu")
+        async def duel_kartu_ac(interaction: discord.Interaction, current: str):
+            data = load_data()
+            user = get_user(data, str(interaction.user.id))
+            return [
+                app_commands.Choice(name=name, value=name)
+                for name in user["collection"]
+                if current.lower() in name.lower()
+            ][:25]
 
         @self.tree.command(name="duelstats", description="Lihat statistik duel kamu atau user lain")
         @app_commands.describe(user="User yang mau dilihat statsnya (kosongkan untuk stats kamu sendiri)")
