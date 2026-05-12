@@ -441,8 +441,8 @@ class IdyBot(discord.Client):
                 value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`\n🎲 {pct_b:.0f}%",
                 inline=True,
             )
+            embed.add_field(name="🃏 Winner Card", value=f"**{winner_card['name']}**", inline=False)
             embed.set_image(url=winner_card["url"])
-            embed.set_footer(text="Kartu duel tidak masuk koleksi")
 
             await interaction.response.send_message(embed=embed)
 
