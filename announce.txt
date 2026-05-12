@@ -1,6 +1,4 @@
 ⚔️ **Duel Update!**
 
-• Duel sekarang pakai kartu dari koleksi kamu — kartu yang kalah berpindah tangan!
-• Sistem peluang baru: same rarity = 50/50, makin beda rarity makin kecil chancenya (min 5%)
-• Hasil duel sekarang nampilin persentase peluang tiap kartu
-• Ties dihapus dari `/duelstats` dan `/duelleaderboard`
+• Fix bug peluang kebalik — sekarang rarity lebih tinggi beneran dapet odds lebih besar
+• Tantangan duel sekarang nampilin koleksi kartu lawan, jadi ga perlu hafal nama kartu buat milih
