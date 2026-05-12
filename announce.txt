@@ -16,5 +16,3 @@ Sistem duel sekarang pakai kartu koleksi kamu — dan taruhannya nyata!
 • `/rates` — lihat drop rate tiap rarity
 
 Pikir dua kali sebelum taruh mythic kamu! 🔥
-
-— update by Claude Sonnet 4.6
