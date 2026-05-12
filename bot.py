@@ -220,7 +220,7 @@ class DuelModal(discord.ui.Modal, title="Pilih Kartu Duel"):
         if gap == 0:
             win_chance_a = 0.5
         else:
-            win_chance_a = max(0.05, 0.5 - gap * 0.15) if rank_a > rank_b else min(0.95, 0.5 + gap * 0.15)
+            win_chance_a = min(0.95, 0.5 + gap * 0.15) if rank_a > rank_b else max(0.05, 0.5 - gap * 0.15)
 
         challenger_wins = random.random() < win_chance_a
 
@@ -542,6 +542,21 @@ class IdyBot(discord.Client):
 
             cfg_a = RARITY_CONFIG[card_a["rarity"]]
 
+            data_b = load_data()
+            user_b = get_user(data_b, str(lawan.id))
+            collection_b = user_b.get("collection", {})
+            if collection_b:
+                collection_lines = []
+                for rarity in ["mythic", "legendary", "epic", "rare", "common"]:
+                    for name, cnt in collection_b.items():
+                        card_obj = next((c for c in CARDS if c["name"] == name), None)
+                        if card_obj and card_obj["rarity"] == rarity:
+                            line = f"• {name}" + (f" x{cnt}" if cnt > 1 else "")
+                            collection_lines.append(line)
+                collection_text = "\n".join(collection_lines) or "-"
+            else:
+                collection_text = "Belum punya kartu!"
+
             view = DuelChallengeView(
                 challenger=interaction.user,
                 target=lawan,
@@ -558,6 +573,11 @@ class IdyBot(discord.Client):
             embed.add_field(
                 name=f"{interaction.user.display_name} taruh",
                 value=f"{cfg_a['emoji']} **{kartu}**\n`{cfg_a['label']}`",
+                inline=False,
+            )
+            embed.add_field(
+                name=f"Koleksi {lawan.display_name}",
+                value=collection_text[:1024],
                 inline=False,
             )
             embed.set_footer(text="Tantangan expire dalam 60 detik")
