@@ -6,13 +6,20 @@ Sistem duel sekarang pakai kartu koleksi kamu — dan taruhannya nyata!
 1. `/duel @lawan kartu:<kartu kamu>` — pilih kartu dari koleksi kamu buat ditaruhkan
 2. Lawan bisa **Terima** atau **Tolak** tantangan
 3. Kalau diterima, lawan pilih kartu mereka lewat form
-4. Kartu dengan rarity lebih tinggi menang — dan kartu yang kalah **berpindah tangan**!
+4. Kartu yang kalah **berpindah tangan** ke pemenang!
 
-**Commands baru lainnya:**
-• `/duelstats` — lihat win/loss/draw record kamu
+**Sistem peluang:**
+• Same rarity → 50/50
+• Beda 1 tier → 65% vs 35%
+• Beda 2 tier → 80% vs 20%
+• Beda 3-4 tier → 95% vs 5%
+Rarity lebih tinggi bukan jaminan menang — masih ada chance upset! 🎲
+
+**Commands baru:**
+• `/duelstats` — lihat win/loss record kamu
 • `/duelleaderboard` — top 5 duelist terbaik
 • `/gift @user kartu` — kasih kartu duplikat ke teman
-• `/merge kartu` — gabungkan 3 kartu duplikat jadi kartu rarity lebih tinggi
+• `/merge kartu` — gabungkan 3 kartu duplikat jadi rarity lebih tinggi
 • `/rates` — lihat drop rate tiap rarity
 
 Pikir dua kali sebelum taruh mythic kamu! 🔥
