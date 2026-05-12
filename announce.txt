@@ -1,9 +1,20 @@
-🃏 **Kartu Baru Telah Ditambahkan!**
+⚔️ **Duel System Overhaul!**
 
-🔵 **Bertolak Belakang** — Rare (Power: 250)
-🔵 **Bercyanda** — Rare (Power: 250)
-🔵 **Bodo Amat** — Rare (Power: 250)
-🟣 **Sodara** — Epic (Power: 450)
-🟡 **Toyota Supra 2000HP BRAkTAKTAK** — Legendary (Power: 700)
+Sistem duel sekarang pakai kartu koleksi kamu — dan taruhannya nyata!
 
-Coba peruntungan kamu dan dapetin kartu barunya! 🎴
+**Cara main:**
+1. `/duel @lawan kartu:<kartu kamu>` — pilih kartu dari koleksi kamu buat ditaruhkan
+2. Lawan bisa **Terima** atau **Tolak** tantangan
+3. Kalau diterima, lawan pilih kartu mereka lewat form
+4. Kartu dengan rarity lebih tinggi menang — dan kartu yang kalah **berpindah tangan**!
+
+**Commands baru lainnya:**
+• `/duelstats` — lihat win/loss/draw record kamu
+• `/duelleaderboard` — top 5 duelist terbaik
+• `/gift @user kartu` — kasih kartu duplikat ke teman
+• `/merge kartu` — gabungkan 3 kartu duplikat jadi kartu rarity lebih tinggi
+• `/rates` — lihat drop rate tiap rarity
+
+Pikir dua kali sebelum taruh mythic kamu! 🔥
+
+— update by Claude Sonnet 4.6
