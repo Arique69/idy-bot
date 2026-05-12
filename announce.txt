@@ -1,4 +1,6 @@
-⚔️ **Duel Update!**
+⚔️ **Duel System Revamp!**
 
-• Fix bug peluang kebalik — sekarang rarity lebih tinggi beneran dapet odds lebih besar
-• Tantangan duel sekarang nampilin koleksi kartu lawan, jadi ga perlu hafal nama kartu buat milih
+• Duel balik ke sistem lama — kartu random, ga ada kartu koleksi yang dipertaruhkan
+• Ga ada lagi seri — kalau rarity sama, 50/50 coin flip menentukan pemenang
+• Rarity lebih tinggi tetap punya keunggulan, tapi yang lebih rendah masih bisa menang
+• Odds ditampilin langsung di embed: sama rarity 50/50, beda 1 tier 65/35, beda 2 tier 80/20, max 90/10
