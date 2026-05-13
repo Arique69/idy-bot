@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import random
 import re
@@ -10,6 +11,7 @@ import time
 from datetime import datetime, timezone
 
 import aiohttp
+import requests as _requests
 import discord
 from discord import app_commands
 from dotenv import load_dotenv
@@ -337,22 +339,23 @@ class IdyBot(discord.Client):
                     f"{ticker_upper}:NYSEARCA",
                 ]
 
-                result = None
-                connector = aiohttp.TCPConnector(ssl=False)
-                async with aiohttp.ClientSession(connector=connector) as session:
-                    for query in candidates:
-                        url = (
-                            f"https://serpapi.com/search"
-                            f"?engine=google_finance&q={query}&api_key={serpapi_key}"
-                        )
-                        async with session.get(url, timeout=aiohttp.ClientTimeout(total=30)) as resp:
-                            data = await resp.json(content_type=None)
+                def _fetch(query: str) -> dict:
+                    url = (
+                        f"https://serpapi.com/search"
+                        f"?engine=google_finance&q={query}&api_key={serpapi_key}"
+                    )
+                    resp = _requests.get(url, timeout=30)
+                    return resp.json()
 
-                        summary = data.get("summary")
-                        if summary and summary.get("price") is not None:
-                            result = summary
-                            result["_query"] = query
-                            break
+                loop = asyncio.get_event_loop()
+                result = None
+                for query in candidates:
+                    data = await loop.run_in_executor(None, _fetch, query)
+                    summary = data.get("summary")
+                    if summary and summary.get("price") is not None:
+                        result = summary
+                        result["_query"] = query
+                        break
 
                 if not result:
                     await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
