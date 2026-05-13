@@ -10,7 +10,7 @@ RARITY_CONFIG: dict = {
     "epic":      {"emoji": "🟣", "color": 0x9b59b6, "label": "Epic",      "shout": "🌟 EPIC PULL!",           "weight": 15},
     "legendary": {"emoji": "🟡", "color": 0xf1c40f, "label": "Legendary", "shout": "💫 LEGENDARY!!!",         "weight":  8},
     "mythic":    {"emoji": "🔴", "color": 0xe74c3c, "label": "MYTHIC",    "shout": "🔥 MYTHIC!!!! 🔥",        "weight":  2},
-    "special":   {"emoji": "💚", "color": 0x2ecc71, "label": "SPECIAL",   "shout": "💚 S P E C I A L !!!! 💚", "weight":  0},
+    "special":   {"emoji": "🟢", "color": 0x2ecc71, "label": "SPECIAL",   "shout": "🟢 S P E C I A L !!!! 🟢", "weight":  0},
 }
 
 CARDS: list[dict] = [
