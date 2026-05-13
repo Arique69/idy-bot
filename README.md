@@ -37,11 +37,12 @@ Setiap user ada cooldown **60 detik** per pull.
 | `/leaderboard` | Top 5 user dengan kartu Legendary & Mythic terbanyak |
 | `/rates` | Lihat persentase drop rate tiap rarity beserta jumlah kartunya |
 | `/kartu <nama>` | Preview kartu tertentu (dengan autocomplete) |
-| `/duel <user>` | Adu kartu sama user lain — kartu diacak, rarity tertinggi menang |
-| `/duelstats [user]` | Lihat statistik duel (menang/kalah/seri/winrate) |
+| `/duel <user>` | Adu kartu sama user lain — kartu diacak dari koleksi, odds menang berdasarkan selisih rarity, hasil menampilkan gambar kartu pemenang |
+| `/duelstats [user]` | Lihat statistik duel (menang/kalah/winrate) |
 | `/duelleaderboard` | Top 5 duelist dengan menang terbanyak |
 | `/trade <user> <kartu_kamu> <kartu_dia>` | Tawarkan trade kartu ke user lain (butuh konfirmasi) |
 | `/gift <user> <kartu>` | Kasih kartu duplikat ke user lain (harus punya lebih dari 1) |
+| `/merge <kartu>` | Gabungkan 3 kartu duplikat jadi 1 kartu rarity lebih tinggi (2 kartu dikonsumsi) |
 | `/saham <ticker>` | Cek harga saham IDX (BBCA, TLKM) atau US (AAPL, TSLA) |
 | `/cuaca` | Cek cuaca hari ini di Jakarta |
 
