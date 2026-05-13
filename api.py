@@ -79,7 +79,39 @@ def get_stats(discord_id: str):
         "duelWins": user.get("duel_wins", 0),
         "duelLosses": user.get("duel_losses", 0),
         "duelDraws": user.get("duel_draws", 0),
+        "coins": user.get("coins", 0),
     }
+
+
+REROLL_COST = 5
+
+@app.post("/user/{discord_id}/reroll")
+def reroll_hand(discord_id: str):
+    data = load_data()
+    user = get_user(data, discord_id)
+
+    if user.get("coins", 0) < REROLL_COST:
+        raise HTTPException(status_code=400, detail="Not enough coins")
+
+    user["coins"] -= REROLL_COST
+    from data import save_data
+    save_data(data)
+
+    # draw new hand from user's collection
+    collection = user.get("collection", {})
+    available = [
+        {**CARD_LOOKUP[name], "count": cnt}
+        for name, cnt in collection.items()
+        if name in CARD_LOOKUP and CARD_LOOKUP[name]["rarity"] != "special"
+    ]
+
+    if len(available) < 5:
+        pool = [c for c in CARDS if c["rarity"] != "special"]
+        random.shuffle(pool)
+        available = pool[:5]
+
+    hand = random.sample(available, min(5, len(available)))
+    return {"coins": user["coins"], "hand": hand}
 
 
 # ---------------------------------------------------------------------------
@@ -226,6 +258,7 @@ class DuelManager:
             user = get_user(data, uid)
             if uid == winner:
                 user["duel_wins"] = user.get("duel_wins", 0) + 1
+                user["coins"] = user.get("coins", 0) + 10
             else:
                 user["duel_losses"] = user.get("duel_losses", 0) + 1
         from data import save_data
