@@ -338,13 +338,14 @@ class IdyBot(discord.Client):
                 ]
 
                 result = None
-                async with aiohttp.ClientSession() as session:
+                connector = aiohttp.TCPConnector(ssl=False)
+                async with aiohttp.ClientSession(connector=connector) as session:
                     for query in candidates:
                         url = (
                             f"https://serpapi.com/search"
                             f"?engine=google_finance&q={query}&api_key={serpapi_key}"
                         )
-                        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                        async with session.get(url, timeout=aiohttp.ClientTimeout(total=30)) as resp:
                             data = await resp.json(content_type=None)
 
                         summary = data.get("summary")
