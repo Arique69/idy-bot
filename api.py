@@ -1,7 +1,7 @@
 """FastAPI server for Discord Activity frontend.
 
 Run alongside the bot:
-  uvicorn api:app --host 0.0.0.0 --port 8000
+  uvicorn api:app --host 0.0.0.0 --port 8000 --ssl-keyfile /etc/letsencrypt/live/idy-api.duckdns.org/privkey.pem --ssl-certfile /etc/letsencrypt/live/idy-api.duckdns.org/fullchain.pem
 """
 
 from __future__ import annotations
