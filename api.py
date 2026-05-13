@@ -83,7 +83,27 @@ def get_stats(discord_id: str):
     }
 
 
+DUEL_WIN_REWARD = 10
 REROLL_COST = 5
+
+@app.post("/user/{discord_id}/duel/win")
+def duel_win(discord_id: str):
+    data = load_data()
+    user = get_user(data, discord_id)
+    user["duel_wins"] = user.get("duel_wins", 0) + 1
+    user["coins"] = user.get("coins", 0) + DUEL_WIN_REWARD
+    from data import save_data
+    save_data(data)
+    return {"coins": user["coins"]}
+
+@app.post("/user/{discord_id}/duel/loss")
+def duel_loss(discord_id: str):
+    data = load_data()
+    user = get_user(data, discord_id)
+    user["duel_losses"] = user.get("duel_losses", 0) + 1
+    from data import save_data
+    save_data(data)
+    return {"ok": True}
 
 @app.post("/user/{discord_id}/reroll")
 def reroll_hand(discord_id: str):
