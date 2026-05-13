@@ -5,11 +5,12 @@ from __future__ import annotations
 TRIGGER_WORD: str = "idy"
 
 RARITY_CONFIG: dict = {
-    "common":    {"emoji": "⚪", "color": 0x95a5a6, "label": "Common",    "shout": "Dapet kartu...",    "weight": 50},
-    "rare":      {"emoji": "🔵", "color": 0x3498db, "label": "Rare",      "shout": "✨ Rare Pull!",     "weight": 25},
-    "epic":      {"emoji": "🟣", "color": 0x9b59b6, "label": "Epic",      "shout": "🌟 EPIC PULL!",    "weight": 15},
-    "legendary": {"emoji": "🟡", "color": 0xf1c40f, "label": "Legendary", "shout": "💫 LEGENDARY!!!",  "weight":  8},
-    "mythic":    {"emoji": "🔴", "color": 0xe74c3c, "label": "MYTHIC",    "shout": "🔥 MYTHIC!!!! 🔥", "weight":  2},
+    "common":    {"emoji": "⚪", "color": 0x95a5a6, "label": "Common",    "shout": "Dapet kartu...",           "weight": 50},
+    "rare":      {"emoji": "🔵", "color": 0x3498db, "label": "Rare",      "shout": "✨ Rare Pull!",            "weight": 25},
+    "epic":      {"emoji": "🟣", "color": 0x9b59b6, "label": "Epic",      "shout": "🌟 EPIC PULL!",           "weight": 15},
+    "legendary": {"emoji": "🟡", "color": 0xf1c40f, "label": "Legendary", "shout": "💫 LEGENDARY!!!",         "weight":  8},
+    "mythic":    {"emoji": "🔴", "color": 0xe74c3c, "label": "MYTHIC",    "shout": "🔥 MYTHIC!!!! 🔥",        "weight":  2},
+    "special":   {"emoji": "💚", "color": 0x2ecc71, "label": "SPECIAL",   "shout": "💚 S P E C I A L !!!! 💚", "weight":  0},
 }
 
 CARDS: list[dict] = [
@@ -379,5 +380,12 @@ CARDS: list[dict] = [
         "name": "Gold Lil Nas",
         "rarity": "mythic",
         "power": 900,
+    },
+    # --- Special 💚 ---
+    {
+        "url": "https://media.discordapp.net/attachments/706813419705335920/1503960840884322416/images.jpg?ex=6a05402e&is=6a03eeae&hm=54311d99393e0bd9bafe899e8dc0d80a6818b8abf7294c765c9c0b1be71a5470&=&format=webp&width=281&height=280",
+        "name": "Jesu Ankle Break",
+        "rarity": "special",
+        "power": 9999,
     },
 ]

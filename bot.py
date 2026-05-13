@@ -34,7 +34,9 @@ _TRIGGER_PATTERN: re.Pattern[str] = re.compile(
 COOLDOWN_SECONDS = 60
 _cooldowns: dict[int, float] = {}
 
-RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic"]
+RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic", "special"]
+
+CLAIM_DATE = (2026, 5, 14)  # year, month, day
 
 RARITY_NEXT = {
     "common": "rare",
@@ -658,6 +660,43 @@ class IdyBot(discord.Client):
                 emoji = RARITY_CONFIG[card_obj["rarity"]]["emoji"] if card_obj else ""
                 results.append(app_commands.Choice(name=f"{emoji} {name} (x{cnt})", value=name))
             return results[:25]
+
+        @self.tree.command(name="claim", description="Claim kartu special eksklusif — hanya tersedia 14 Mei 2026!")
+        async def claim(interaction: discord.Interaction) -> None:
+            today = datetime.now(timezone.utc)
+            if (today.year, today.month, today.day) != CLAIM_DATE:
+                await interaction.response.send_message(
+                    "❌ Kartu special ini hanya bisa di-claim pada **14 Mei 2026**!", ephemeral=True
+                )
+                return
+
+            special_card = next((c for c in CARDS if c["rarity"] == "special"), None)
+            if not special_card:
+                await interaction.response.send_message("Kartu special tidak ditemukan.", ephemeral=True)
+                return
+
+            data = load_data()
+            user = get_user(data, str(interaction.user.id))
+
+            if user.get("claimed_special"):
+                await interaction.response.send_message(
+                    "❌ Kamu udah claim kartu special ini sebelumnya!", ephemeral=True
+                )
+                return
+
+            user["collection"][special_card["name"]] = user["collection"].get(special_card["name"], 0) + 1
+            user["claimed_special"] = True
+            save_data(data)
+
+            cfg = RARITY_CONFIG["special"]
+            embed = discord.Embed(
+                title=cfg["shout"],
+                description=f"{cfg['emoji']} **{special_card['name']}**\n`{cfg['label']}`",
+                color=cfg["color"],
+            )
+            embed.set_image(url=special_card["url"])
+            embed.set_footer(text="Kartu eksklusif 14 Mei 2026 • Hanya bisa di-claim sekali!")
+            await interaction.response.send_message(embed=embed)
 
         @self.tree.command(name="merge", description="Gabungkan 2 kartu duplikat jadi kartu rarity lebih tinggi")
         @app_commands.describe(kartu="Kartu yang mau di-merge (harus punya minimal 3)")
