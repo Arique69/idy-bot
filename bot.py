@@ -381,7 +381,7 @@ class IdyBot(discord.Client):
                 await interaction.followup.send(embed=embed)
 
             except Exception as exc:
-                log.error("Error fetching stock %s: %s", ticker, exc)
+                log.error("Error fetching stock %s: %s", ticker, exc, exc_info=True)
                 await interaction.followup.send("Gagal ngambil data saham, coba lagi nanti.")
 
         @self.tree.command(name="duel", description="Adu kartu sama user lain")
