@@ -357,20 +357,19 @@ class IdyBot(discord.Client):
                     await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
                     return
 
-                price = result["price"]
+                price = result.get("price") or result.get("extracted_price", 0)
                 currency = result.get("currency", "")
-                change = result.get("price_change", {})
-                change_val = change.get("amount", 0) or 0
-                change_pct = change.get("percentage", 0) or 0
-                change_movement = change.get("movement", "")
+                title = result.get("title") or result["_query"]
+                movement = result.get("price_movement", {})
+                change_val = movement.get("value", 0) or 0
+                change_pct = movement.get("percentage", 0) or 0
+                change_dir = movement.get("movement", "")
 
-                arrow = "🟢 ▲" if change_movement == "Up" else "🔴 ▼"
+                arrow = "🟢 ▲" if change_dir == "Up" else "🔴 ▼"
                 sign = "+" if change_val >= 0 else ""
-                color = 0x2ecc71 if change_movement == "Up" else 0xe74c3c
+                color = 0x2ecc71 if change_dir == "Up" else 0xe74c3c
 
-                title = data.get("title") or result["_query"]
-
-                embed = discord.Embed(title=f"{title}", color=color)
+                embed = discord.Embed(title=title, color=color)
                 embed.add_field(name="Harga", value=f"**{currency} {price:,.2f}**", inline=True)
                 embed.add_field(
                     name="Perubahan",
