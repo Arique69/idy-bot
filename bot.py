@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import random
 import re
@@ -11,7 +10,6 @@ import time
 from datetime import datetime, timezone
 
 import aiohttp
-import requests as _requests
 import discord
 from discord import app_commands
 from dotenv import load_dotenv
@@ -318,69 +316,62 @@ class IdyBot(discord.Client):
 
             await interaction.response.send_message(embed=embed)
 
-        @self.tree.command(name="saham", description="Cek harga saham (contoh: BBCA, TLKM, AAPL, TSLA)")
-        @app_commands.describe(ticker="Kode saham IDX (BBCA, TLKM) atau US (AAPL, TSLA, dll)")
+        @self.tree.command(name="saham", description="Cek harga saham (contoh: BBCA, TLKM, GOTO)")
+        @app_commands.describe(ticker="Kode saham IDX (tanpa .JK) atau US (AAPL, TSLA, dll)")
         async def saham(interaction: discord.Interaction, ticker: str) -> None:
             await interaction.response.defer()
-
-            serpapi_key = os.getenv("SERPAPI_KEY")
-            if not serpapi_key:
-                await interaction.followup.send("SERPAPI_KEY tidak ditemukan di .env!")
-                return
-
             try:
                 ticker_upper = ticker.upper().strip()
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Accept": "application/json",
+                    "Accept-Language": "en-US,en;q=0.9",
+                }
 
-                # Try IDX first, then common US exchanges
-                candidates = [
-                    f"{ticker_upper}:IDX",
-                    f"{ticker_upper}:NASDAQ",
-                    f"{ticker_upper}:NYSE",
-                    f"{ticker_upper}:NYSEARCA",
-                ]
+                q = None
+                async with aiohttp.ClientSession(headers=headers) as session:
+                    for symbol in [f"{ticker_upper}.JK", ticker_upper]:
+                        url = f"https://query2.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=1d"
+                        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                            data = await resp.json(content_type=None)
 
-                def _fetch(query: str) -> dict:
-                    url = (
-                        f"https://serpapi.com/search"
-                        f"?engine=google_finance&q={query}&api_key={serpapi_key}"
-                    )
-                    resp = _requests.get(url, timeout=30)
-                    return resp.json()
+                        chart = data.get("chart", {})
+                        if chart.get("error") or not chart.get("result"):
+                            continue
 
-                loop = asyncio.get_event_loop()
-                result = None
-                for query in candidates:
-                    data = await loop.run_in_executor(None, _fetch, query)
-                    summary = data.get("summary")
-                    if summary and summary.get("price") is not None:
-                        result = summary
-                        result["_query"] = query
-                        break
+                        meta = chart["result"][0]["meta"]
+                        price = meta.get("regularMarketPrice")
+                        if price:
+                            q = meta
+                            q["_symbol"] = symbol
+                            break
 
-                if not result:
+                if not q:
                     await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
                     return
 
-                price = result.get("price") or result.get("extracted_price", 0)
-                currency = result.get("currency", "")
-                title = result.get("title") or result["_query"]
-                movement = result.get("price_movement", {})
-                change_val = movement.get("value", 0) or 0
-                change_pct = movement.get("percentage", 0) or 0
-                change_dir = movement.get("movement", "")
+                symbol = q["_symbol"]
+                name = q.get("longName") or q.get("shortName") or symbol
+                currency = q.get("currency", "")
+                prev_close = q.get("previousClose") or q.get("chartPreviousClose", 0)
+                change = price - prev_close if prev_close else 0
+                change_pct = (change / prev_close * 100) if prev_close else 0
+                high = q.get("regularMarketDayHigh")
+                low = q.get("regularMarketDayLow")
+                volume = q.get("regularMarketVolume")
 
-                arrow = "🟢 ▲" if change_dir == "Up" else "🔴 ▼"
-                sign = "+" if change_val >= 0 else ""
-                color = 0x2ecc71 if change_dir == "Up" else 0xe74c3c
+                arrow = "🟢 ▲" if change >= 0 else "🔴 ▼"
+                sign = "+" if change >= 0 else ""
+                color = 0x2ecc71 if change >= 0 else 0xe74c3c
 
-                embed = discord.Embed(title=title, color=color)
+                embed = discord.Embed(title=f"{name} ({symbol})", color=color)
                 embed.add_field(name="Harga", value=f"**{currency} {price:,.2f}**", inline=True)
-                embed.add_field(
-                    name="Perubahan",
-                    value=f"{arrow} {sign}{change_val:,.2f} ({sign}{change_pct:.2f}%)",
-                    inline=True,
-                )
-                embed.set_footer(text="Sumber: Google Finance via SerpApi")
+                embed.add_field(name="Perubahan", value=f"{arrow} {sign}{change:,.2f} ({sign}{change_pct:.2f}%)", inline=True)
+                embed.add_field(name="​", value="​", inline=True)
+                embed.add_field(name="Tertinggi Hari Ini", value=f"{currency} {high:,.2f}" if high else "-", inline=True)
+                embed.add_field(name="Terendah Hari Ini", value=f"{currency} {low:,.2f}" if low else "-", inline=True)
+                embed.add_field(name="Volume", value=f"{volume:,}" if volume else "-", inline=True)
+                embed.set_footer(text="Sumber: Yahoo Finance • Data bisa delay 15 menit")
 
                 await interaction.followup.send(embed=embed)
 
