@@ -302,7 +302,7 @@ class IdyBot(discord.Client):
                 description=f"Total: **{len(collection)}/{total_cards}** kartu unik",
                 color=0x9b59b6,
             )
-            for rarity in ["mythic", "legendary", "epic", "rare", "common"]:
+            for rarity in ["special", "mythic", "legendary", "epic", "rare", "common"]:
                 if rarity in by_rarity:
                     cfg = RARITY_CONFIG[rarity]
                     total_rarity = sum(1 for c in CARDS if c["rarity"] == rarity)
