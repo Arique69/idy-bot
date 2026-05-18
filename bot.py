@@ -522,9 +522,12 @@ class IdyBot(discord.Client):
                 return
 
             rarity = RARITY_CONFIG[card["rarity"]]
+            desc = f"{rarity['emoji']} `{rarity['label']}` | ⚔️ ATK {card['atk']}"
+            if card.get("skill"):
+                desc += f"\n✨ **{card['skill']['name']}** — {card['skill']['desc']} (+{card['skill']['bonus']*100:.0f}%)"
             embed = discord.Embed(
                 title=card["name"],
-                description=f"{rarity['emoji']} `{rarity['label']}`",
+                description=desc,
                 color=rarity["color"],
             )
             embed.set_image(url=card["url"])
