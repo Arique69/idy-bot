@@ -36,6 +36,17 @@ _cooldowns: dict[int, float] = {}
 
 RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic", "special"]
 
+
+def compute_win_chance(card_a: dict, card_b: dict) -> float:
+    rank_a = RARITY_ORDER.index(card_a["rarity"])
+    rank_b = RARITY_ORDER.index(card_b["rarity"])
+    gap = rank_a - rank_b
+    base = 0.5 + gap * 0.15
+    atk_mod = (card_a["atk"] - card_b["atk"]) / 1000
+    skill_bonus = card_a["skill"]["bonus"] if card_a.get("skill") else 0
+    return max(0.05, min(0.95, base + atk_mod + skill_bonus))
+
+
 CLAIM_DATE = (2026, 5, 14)  # year, month, day
 
 RARITY_NEXT = {
