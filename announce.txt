@@ -1,7 +1,7 @@
 ⚔️ **Duel System Update!**
 
-• Setiap kartu sekarang punya **ATK stat** tersendiri — dua legendary bisa beda kekuatannya!
-• Kartu Epic ke atas punya **passive skill** unik sesuai vibes kartunya
-• Skill tampil langsung di hasil duel biar makin dramatis
-• Odds duel sekarang dipengaruhi ATK dan skill — bukan cuma rarity doang
-• Upset masih bisa terjadi, tapi kartu bagus lebih worth sekarang 🔥
+• Setiap kartu sekarang punya **ATK stat** unik — beda kartu beda kekuatan, even sesama rarity!
+• Kartu Epic ke atas punya **passive skill** yang ngaruh ke odds duel
+• Odds duel sekarang dihitung dari rarity + ATK + skill — bukan cuma rarity doang
+• ATK gap sekarang kerasa — common 28 ATK vs 22 ATK udah beda odds-nya
+• Cek stat kartu kamu lewat `/kartu` atau langsung keliatan pas pull dan duel 👀
