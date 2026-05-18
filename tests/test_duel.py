@@ -21,6 +21,13 @@ def test_skill_bonus_increases_chance():
     assert compute_win_chance(skill, base) > compute_win_chance(base, base)
     assert abs(compute_win_chance(skill, base) - 0.59) < 0.001
 
+def test_opponent_skill_reduces_chance():
+    no_skill   = {"rarity": "epic", "atk": 60, "skill": None}
+    with_skill = {"rarity": "epic", "atk": 60, "skill": {"name": "X", "desc": "Y", "bonus": 0.09}}
+    chance = compute_win_chance(no_skill, with_skill)
+    assert chance < 0.5
+    assert abs(chance - 0.41) < 0.001  # 0.5 + 0 - 0.09 = 0.41
+
 def test_result_clamped_between_005_and_095():
     mythic  = {"rarity": "mythic",  "atk": 110, "skill": {"name": "X", "desc": "Y", "bonus": 0.22}}
     common  = {"rarity": "common",  "atk": 10,  "skill": None}

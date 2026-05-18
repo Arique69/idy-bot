@@ -378,7 +378,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("Tirai Misterius", "legendary"),
-        "skill": {"name": "Tirai Terbuka", "desc": "Nobody knows what's behind", "bonus": 0.12},
+        "skill": {"name": "Tirai Terbuka", "desc": "Nobody knows what's behind. Truly unpredictable", "bonus": 0.12},
     },
 
     {

@@ -43,8 +43,9 @@ def compute_win_chance(card_a: dict, card_b: dict) -> float:
     gap = rank_a - rank_b
     base = 0.5 + gap * 0.15
     atk_mod = (card_a["atk"] - card_b["atk"]) / 1000
-    skill_bonus = card_a["skill"]["bonus"] if card_a.get("skill") else 0
-    return max(0.05, min(0.95, base + atk_mod + skill_bonus))
+    skill_a = card_a["skill"]["bonus"] if card_a.get("skill") else 0
+    skill_b = card_b["skill"]["bonus"] if card_b.get("skill") else 0
+    return max(0.05, min(0.95, base + atk_mod + skill_a - skill_b))
 
 
 CLAIM_DATE = (2026, 5, 14)  # year, month, day
