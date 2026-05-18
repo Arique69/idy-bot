@@ -312,9 +312,10 @@ class IdyBot(discord.Client):
                     by_rarity.setdefault(card["rarity"], []).append((card_name, count))
 
             total_cards = len(CARDS)
+            owned_unique = sum(len(cards) for cards in by_rarity.values())
             embed = discord.Embed(
                 title=f"Koleksi {interaction.user.display_name}",
-                description=f"Total: **{len(collection)}/{total_cards}** kartu unik",
+                description=f"Total: **{owned_unique}/{total_cards}** kartu unik",
                 color=0x9b59b6,
             )
             for rarity in ["special", "mythic", "legendary", "epic", "rare", "common"]:
