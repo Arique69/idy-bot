@@ -191,9 +191,12 @@ class TradeView(discord.ui.View):
 
 def _build_card_embed(card: dict, is_pity: bool = False) -> discord.Embed:
     rarity = RARITY_CONFIG[card["rarity"]]
+    desc = f"{rarity['emoji']} **{card['name']}**\n`{rarity['label']}` | ⚔️ ATK {card['atk']}"
+    if card.get("skill"):
+        desc += f"\n✨ **{card['skill']['name']}** — {card['skill']['desc']}"
     embed = discord.Embed(
         title=rarity["shout"],
-        description=f"{rarity['emoji']} **{card['name']}**\n`{rarity['label']}`",
+        description=desc,
         color=rarity["color"],
     )
     embed.set_image(url=card["url"])
