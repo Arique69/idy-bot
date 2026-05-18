@@ -1,5 +1,7 @@
-🟢 **Kartu Special Eksklusif Hadir!**
+⚔️ **Duel System Update!**
 
-• Rarity baru **SPECIAL** 👑 — di atas Mythic!
-• Ada kartu special eksklusif yang bisa di-claim besok dengan `/claim`!
-• Tiap user hanya bisa claim **sekali**, jangan sampai ketinggalan!
+• Setiap kartu sekarang punya **ATK stat** tersendiri — dua legendary bisa beda kekuatannya!
+• Kartu Epic ke atas punya **passive skill** unik sesuai vibes kartunya
+• Skill tampil langsung di hasil duel biar makin dramatis
+• Odds duel sekarang dipengaruhi ATK dan skill — bukan cuma rarity doang
+• Upset masih bisa terjadi, tapi kartu bagus lebih worth sekarang 🔥
