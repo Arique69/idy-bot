@@ -411,9 +411,6 @@ class IdyBot(discord.Client):
                 await interaction.response.send_message(f"**{lawan.display_name}** belum punya kartu!", ephemeral=True)
                 return
 
-            rank_a = RARITY_ORDER.index(card_a["rarity"])
-            rank_b = RARITY_ORDER.index(card_b["rarity"])
-
             cfg_a = RARITY_CONFIG[card_a["rarity"]]
             cfg_b = RARITY_CONFIG[card_b["rarity"]]
 
@@ -421,8 +418,7 @@ class IdyBot(discord.Client):
             user_a = get_user(data, str(interaction.user.id))
             user_b = get_user(data, str(lawan.id))
 
-            gap = rank_a - rank_b
-            win_chance_a = min(0.9, max(0.1, 0.5 + gap * 0.15))
+            win_chance_a = compute_win_chance(card_a, card_b)
             a_wins = random.random() < win_chance_a
 
             if a_wins:
@@ -443,17 +439,16 @@ class IdyBot(discord.Client):
             embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
             pct_a = win_chance_a * 100
             pct_b = 100 - pct_a
-            embed.add_field(
-                name=f"{interaction.user.display_name}",
-                value=f"{cfg_a['emoji']} **{card_a['name']}**\n`{cfg_a['label']}`\n🎲 {pct_a:.0f}%",
-                inline=True,
-            )
+
+            def card_field(card, cfg, pct):
+                lines = [f"{cfg['emoji']} **{card['name']}**", f"`{cfg['label']}` | ⚔️ ATK {card['atk']}", f"🎲 {pct:.0f}%"]
+                if card.get("skill"):
+                    lines.append(f"✨ **{card['skill']['name']}** — {card['skill']['desc']} (+{card['skill']['bonus']*100:.0f}%)")
+                return "\n".join(lines)
+
+            embed.add_field(name=interaction.user.display_name, value=card_field(card_a, cfg_a, pct_a), inline=True)
             embed.add_field(name="VS", value="⚔️", inline=True)
-            embed.add_field(
-                name=f"{lawan.display_name}",
-                value=f"{cfg_b['emoji']} **{card_b['name']}**\n`{cfg_b['label']}`\n🎲 {pct_b:.0f}%",
-                inline=True,
-            )
+            embed.add_field(name=lawan.display_name, value=card_field(card_b, cfg_b, pct_b), inline=True)
             embed.add_field(name="🃏 Winner Card", value=f"**{winner_card['name']}**", inline=False)
             embed.set_image(url=winner_card["url"])
 
