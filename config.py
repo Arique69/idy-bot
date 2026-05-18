@@ -219,7 +219,7 @@ CARDS: list[dict] = [
         "skill": None,
     },
     {
-        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnlva2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9oryRGyTdzzFEBUgcb/giphy.gif",
+        "url": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnloa2g3Z3BpcWo5ZnA5dW9wenR1NmNpY2N3NjNvOHdrZGppdHhhMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/9oryRGyTdzzFEBUgcb/giphy.gif",
         "name": "Amba Menangis",
         "rarity": "rare",
         "power": 250,
