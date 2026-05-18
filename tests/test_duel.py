@@ -13,7 +13,7 @@ def test_same_rarity_higher_atk_wins_more():
     low  = {"rarity": "rare", "atk": 25, "skill": None}
     chance = compute_win_chance(high, low)
     assert chance > 0.5
-    assert abs(chance - 0.525) < 0.001  # (50-25)/1000 = 0.025 bonus
+    assert abs(chance - 0.625) < 0.001  # (50-25)/200 = 0.125 bonus
 
 def test_skill_bonus_increases_chance():
     base  = {"rarity": "epic", "atk": 60, "skill": None}
