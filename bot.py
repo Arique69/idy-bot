@@ -229,7 +229,7 @@ class TradeView(discord.ui.View):
     @discord.ui.button(label="✅ Accept", style=discord.ButtonStyle.green)
     async def accept(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user.id != self.target.id:
-            await interaction.response.send_message("Bukan kamu yang diajak trade!", ephemeral=True)
+            await interaction.response.send_message("This trade isn't for you!", ephemeral=True)
             return
 
         data = load_data()
@@ -237,10 +237,10 @@ class TradeView(discord.ui.View):
         user_b = get_user(data, str(self.target.id))
 
         if user_a["collection"].get(self.card_a, 0) < 1:
-            await self._finish(interaction, f"❌ Trade gagal — **{self.challenger.display_name}** udah ga punya **{self.card_a}**.")
+            await self._finish(interaction, f"❌ Trade failed — **{self.challenger.display_name}** no longer has **{self.card_a}**.")
             return
         if user_b["collection"].get(self.card_b, 0) < 1:
-            await self._finish(interaction, f"❌ Trade gagal — **{self.target.display_name}** udah ga punya **{self.card_b}**.")
+            await self._finish(interaction, f"❌ Trade failed — **{self.target.display_name}** no longer has **{self.card_b}**.")
             return
 
         user_a["collection"][self.card_a] -= 1
@@ -255,15 +255,15 @@ class TradeView(discord.ui.View):
         save_data(data)
         await self._finish(
             interaction,
-            f"✅ Trade berhasil!\n**{self.challenger.display_name}** dapat **{self.card_b}**\n**{self.target.display_name}** dapat **{self.card_a}**",
+            f"✅ Trade complete!\n**{self.challenger.display_name}** got **{self.card_b}**\n**{self.target.display_name}** got **{self.card_a}**",
         )
 
     @discord.ui.button(label="❌ Decline", style=discord.ButtonStyle.red)
     async def decline(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         if interaction.user.id != self.target.id:
-            await interaction.response.send_message("Bukan kamu yang diajak trade!", ephemeral=True)
+            await interaction.response.send_message("This trade isn't for you!", ephemeral=True)
             return
-        await self._finish(interaction, f"❌ Trade ditolak oleh **{self.target.display_name}**.")
+        await self._finish(interaction, f"❌ Trade declined by **{self.target.display_name}**.")
 
     async def on_timeout(self) -> None:
         for item in self.children:
@@ -286,7 +286,7 @@ def _build_card_embed(card: dict, is_pity: bool = False) -> discord.Embed:
         color=rarity["color"],
     )
     embed.set_image(url=card["url"])
-    footer = "Idy Gacha System • ketik 'idy' buat pull lagi"
+    footer = "Idy Gacha System • type 'idy' to pull again"
     if is_pity:
         footer = "🍀 Pity activated! • " + footer
     embed.set_footer(text=footer)
@@ -299,7 +299,7 @@ class IdyBot(discord.Client):
         self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self) -> None:
-        @self.tree.command(name="cuaca", description="Cek cuaca hari ini di Jakarta")
+        @self.tree.command(name="cuaca", description="Check today's weather in Jakarta")
         async def cuaca(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
             try:
@@ -317,22 +317,22 @@ class IdyBot(discord.Client):
                 desc = current["weatherDesc"][0]["value"]
 
                 embed = discord.Embed(
-                    title="Cuaca Jakarta Hari Ini",
+                    title="Jakarta Weather Today",
                     color=discord.Color.blue(),
                 )
-                embed.add_field(name="Kondisi", value=desc, inline=False)
-                embed.add_field(name="Suhu", value=f"{temp}°C (feels like {feels_like}°C)", inline=True)
-                embed.add_field(name="Kelembapan", value=f"{humidity}%", inline=True)
-                embed.add_field(name="Angin", value=f"{wind} km/h", inline=True)
-                embed.set_footer(text="Sumber: wttr.in")
+                embed.add_field(name="Condition", value=desc, inline=False)
+                embed.add_field(name="Temperature", value=f"{temp}°C (feels like {feels_like}°C)", inline=True)
+                embed.add_field(name="Humidity", value=f"{humidity}%", inline=True)
+                embed.add_field(name="Wind", value=f"{wind} km/h", inline=True)
+                embed.set_footer(text="Source: wttr.in")
 
                 await interaction.followup.send(embed=embed)
 
             except Exception as exc:
                 log.error("Error fetching weather: %s", exc)
-                await interaction.followup.send("Gagal ngambil data cuaca, coba lagi nanti.")
+                await interaction.followup.send("Failed to fetch weather data, try again later.")
 
-        @self.tree.command(name="rates", description="Lihat persentase drop rate tiap rarity")
+        @self.tree.command(name="rates", description="View drop rate percentages per rarity")
         async def rates(interaction: discord.Interaction) -> None:
             total_weight = sum(r["weight"] for r in RARITY_CONFIG.values())
             embed = discord.Embed(title="🎴 Drop Rates", color=0x9b59b6)
@@ -342,12 +342,12 @@ class IdyBot(discord.Client):
                 card_count = sum(1 for c in CARDS if c["rarity"] == rarity)
                 embed.add_field(
                     name=f"{cfg['emoji']} {cfg['label']}",
-                    value=f"`{pct:.0f}%` — {card_count} kartu",
+                    value=f"`{pct:.0f}%` — {card_count} cards",
                     inline=False,
                 )
             await interaction.response.send_message(embed=embed)
 
-        @self.tree.command(name="leaderboard", description="Top 5 pemilik kartu legendary & mythic")
+        @self.tree.command(name="leaderboard", description="Top 5 players with the most legendary & mythic cards")
         async def leaderboard(interaction: discord.Interaction) -> None:
             data = load_data()
             users = data.get("users", {})
@@ -359,10 +359,10 @@ class IdyBot(discord.Client):
             )[:5]
 
             if not ranked or all(u[1].get("legendary_count", 0) + u[1].get("mythic_count", 0) == 0 for u in ranked):
-                await interaction.response.send_message("Belum ada yang dapet legendary atau mythic!")
+                await interaction.response.send_message("Nobody has pulled a legendary or mythic yet!")
                 return
 
-            embed = discord.Embed(title="🏆 Leaderboard Gacha", color=0xf1c40f)
+            embed = discord.Embed(title="🏆 Gacha Leaderboard", color=0xf1c40f)
             for i, (uid, udata) in enumerate(ranked, 1):
                 legendary = udata.get("legendary_count", 0)
                 mythic = udata.get("mythic_count", 0)
@@ -381,14 +381,14 @@ class IdyBot(discord.Client):
 
             await interaction.response.send_message(embed=embed)
 
-        @self.tree.command(name="koleksi", description="Lihat koleksi kartu kamu")
+        @self.tree.command(name="koleksi", description="View your card collection")
         async def koleksi(interaction: discord.Interaction) -> None:
             data = load_data()
             user = get_user(data, str(interaction.user.id))
             collection = user.get("collection", {})
 
             if not collection:
-                await interaction.response.send_message("Koleksi kamu masih kosong! Ketik `idy` buat pull.")
+                await interaction.response.send_message("Your collection is empty! Type `idy` to pull a card.")
                 return
 
             by_rarity: dict[str, list[tuple[str, int]]] = {}
@@ -400,8 +400,8 @@ class IdyBot(discord.Client):
             total_cards = len(CARDS)
             owned_unique = sum(len(cards) for cards in by_rarity.values())
             embed = discord.Embed(
-                title=f"Koleksi {interaction.user.display_name}",
-                description=f"Total: **{owned_unique}/{total_cards}** kartu unik",
+                title=f"{interaction.user.display_name}'s Collection",
+                description=f"Total: **{owned_unique}/{total_cards}** unique cards",
                 color=0x9b59b6,
             )
             for rarity in ["special", "mythic", "legendary", "epic", "rare", "common"]:
@@ -420,8 +420,8 @@ class IdyBot(discord.Client):
 
             await interaction.response.send_message(embed=embed)
 
-        @self.tree.command(name="saham", description="Cek harga saham (contoh: BBCA, TLKM, GOTO)")
-        @app_commands.describe(ticker="Kode saham IDX (tanpa .JK) atau US (AAPL, TSLA, dll)")
+        @self.tree.command(name="saham", description="Check stock price (e.g. BBCA, TLKM, GOTO)")
+        @app_commands.describe(ticker="IDX stock code (without .JK) or US ticker (AAPL, TSLA, etc)")
         async def saham(interaction: discord.Interaction, ticker: str) -> None:
             await interaction.response.defer()
             try:
@@ -451,7 +451,7 @@ class IdyBot(discord.Client):
                             break
 
                 if not q:
-                    await interaction.followup.send(f"Saham `{ticker_upper}` tidak ditemukan. Cek kode sahamnya ya.")
+                    await interaction.followup.send(f"Stock `{ticker_upper}` not found. Check the ticker symbol.")
                     return
 
                 symbol = q["_symbol"]
@@ -469,37 +469,37 @@ class IdyBot(discord.Client):
                 color = 0x2ecc71 if change >= 0 else 0xe74c3c
 
                 embed = discord.Embed(title=f"{name} ({symbol})", color=color)
-                embed.add_field(name="Harga", value=f"**{currency} {price:,.2f}**", inline=True)
-                embed.add_field(name="Perubahan", value=f"{arrow} {sign}{change:,.2f} ({sign}{change_pct:.2f}%)", inline=True)
+                embed.add_field(name="Price", value=f"**{currency} {price:,.2f}**", inline=True)
+                embed.add_field(name="Change", value=f"{arrow} {sign}{change:,.2f} ({sign}{change_pct:.2f}%)", inline=True)
                 embed.add_field(name="​", value="​", inline=True)
-                embed.add_field(name="Tertinggi Hari Ini", value=f"{currency} {high:,.2f}" if high else "-", inline=True)
-                embed.add_field(name="Terendah Hari Ini", value=f"{currency} {low:,.2f}" if low else "-", inline=True)
+                embed.add_field(name="Day High", value=f"{currency} {high:,.2f}" if high else "-", inline=True)
+                embed.add_field(name="Day Low", value=f"{currency} {low:,.2f}" if low else "-", inline=True)
                 embed.add_field(name="Volume", value=f"{volume:,}" if volume else "-", inline=True)
-                embed.set_footer(text="Sumber: Yahoo Finance • Data bisa delay 15 menit")
+                embed.set_footer(text="Source: Yahoo Finance • Data may be delayed 15 min")
 
                 await interaction.followup.send(embed=embed)
 
             except Exception as exc:
                 log.error("Error fetching stock %s: %s", ticker, exc, exc_info=True)
-                await interaction.followup.send("Gagal ngambil data saham, coba lagi nanti.")
+                await interaction.followup.send("Failed to fetch stock data, try again later.")
 
-        @self.tree.command(name="duel", description="Adu kartu sama user lain")
-        @app_commands.describe(lawan="User yang mau diajak duel")
+        @self.tree.command(name="duel", description="Challenge another user to a card duel")
+        @app_commands.describe(lawan="User to duel")
         async def duel(interaction: discord.Interaction, lawan: discord.Member) -> None:
             if lawan.bot:
-                await interaction.response.send_message("Ga bisa duel sama bot!", ephemeral=True)
+                await interaction.response.send_message("Can't duel a bot!", ephemeral=True)
                 return
             if lawan.id == interaction.user.id:
-                await interaction.response.send_message("Ga bisa duel sama diri sendiri!", ephemeral=True)
+                await interaction.response.send_message("Can't duel yourself!", ephemeral=True)
                 return
 
             card_a = get_random_collection_card(interaction.user.id)
             if not card_a:
-                await interaction.response.send_message("Kamu belum punya kartu!", ephemeral=True)
+                await interaction.response.send_message("You don't have any cards!", ephemeral=True)
                 return
             card_b = get_random_collection_card(lawan.id)
             if not card_b:
-                await interaction.response.send_message(f"**{lawan.display_name}** belum punya kartu!", ephemeral=True)
+                await interaction.response.send_message(f"**{lawan.display_name}** doesn't have any cards!", ephemeral=True)
                 return
 
             cfg_a = RARITY_CONFIG[card_a["rarity"]]
@@ -513,7 +513,7 @@ class IdyBot(discord.Client):
             a_wins = random.random() < win_chance_a
 
             if a_wins:
-                result = f"🏆 **{interaction.user.display_name}** menang!"
+                result = f"🏆 **{interaction.user.display_name}** wins!"
                 color = 0x2ecc71
                 winner_card = card_a
                 loser_card = card_b
@@ -521,7 +521,7 @@ class IdyBot(discord.Client):
                 user_a["duel_wins"] = user_a.get("duel_wins", 0) + 1
                 user_b["duel_losses"] = user_b.get("duel_losses", 0) + 1
             else:
-                result = f"🏆 **{lawan.display_name}** menang!"
+                result = f"🏆 **{lawan.display_name}** wins!"
                 color = 0xe74c3c
                 winner_card = card_b
                 loser_card = card_a
@@ -538,7 +538,7 @@ class IdyBot(discord.Client):
                 misteri_dodged,
             )
 
-            embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
+            embed = discord.Embed(title="⚔️ CARD DUEL!", description=result, color=color)
             pct_a = win_chance_a * 100
             pct_b = 100 - pct_a
 
@@ -559,8 +559,8 @@ class IdyBot(discord.Client):
 
             await interaction.response.send_message(embed=embed)
 
-        @self.tree.command(name="duelstats", description="Lihat statistik duel kamu atau user lain")
-        @app_commands.describe(user="User yang mau dilihat statsnya (kosongkan untuk stats kamu sendiri)")
+        @self.tree.command(name="duelstats", description="View duel statistics for you or another user")
+        @app_commands.describe(user="User to check stats for (leave empty for yourself)")
         async def duelstats(interaction: discord.Interaction, user: discord.Member = None) -> None:
             target = user or interaction.user
             data = load_data()
@@ -575,14 +575,14 @@ class IdyBot(discord.Client):
                 title=f"⚔️ Duel Stats — {target.display_name}",
                 color=0xf1c40f,
             )
-            embed.add_field(name="🏆 Menang", value=str(wins), inline=True)
-            embed.add_field(name="💀 Kalah", value=str(losses), inline=True)
-            embed.add_field(name="📊 Total Duel", value=str(total), inline=True)
+            embed.add_field(name="🏆 Wins", value=str(wins), inline=True)
+            embed.add_field(name="💀 Losses", value=str(losses), inline=True)
+            embed.add_field(name="📊 Total Duels", value=str(total), inline=True)
             embed.add_field(name="📈 Win Rate", value=f"{winrate:.1f}%", inline=True)
 
             await interaction.response.send_message(embed=embed)
 
-        @self.tree.command(name="duelleaderboard", description="Top 5 duelist dengan menang terbanyak")
+        @self.tree.command(name="duelleaderboard", description="Top 5 duelists with the most wins")
         async def duelleaderboard(interaction: discord.Interaction) -> None:
             data = load_data()
             users = data.get("users", {})
@@ -590,7 +590,7 @@ class IdyBot(discord.Client):
             ranked = sorted(users.items(), key=lambda x: x[1].get("duel_wins", 0), reverse=True)[:5]
 
             if not ranked or all(u[1].get("duel_wins", 0) == 0 for u in ranked):
-                await interaction.response.send_message("Belum ada yang pernah duel!")
+                await interaction.response.send_message("Nobody has dueled yet!")
                 return
 
             embed = discord.Embed(title="⚔️ Duel Leaderboard", color=0xe74c3c)
@@ -607,18 +607,18 @@ class IdyBot(discord.Client):
                     name = f"User {uid}"
                 embed.add_field(
                     name=f"{medals[i]} {name}",
-                    value=f"🏆 {wins} menang  💀 {losses} kalah",
+                    value=f"🏆 {wins} wins  💀 {losses} losses",
                     inline=False,
                 )
 
             await interaction.response.send_message(embed=embed)
 
-        @self.tree.command(name="kartu", description="Preview kartu tertentu")
-        @app_commands.describe(nama="Nama kartu yang mau dilihat")
+        @self.tree.command(name="kartu", description="Preview a specific card")
+        @app_commands.describe(nama="Name of the card to preview")
         async def kartu(interaction: discord.Interaction, nama: str) -> None:
             card = next((c for c in CARDS if c["name"].lower() == nama.lower()), None)
             if not card:
-                await interaction.response.send_message(f"Kartu `{nama}` tidak ditemukan.", ephemeral=True)
+                await interaction.response.send_message(f"Card `{nama}` not found.", ephemeral=True)
                 return
 
             rarity = RARITY_CONFIG[card["rarity"]]
@@ -644,15 +644,15 @@ class IdyBot(discord.Client):
             ]
             return matches[:25]
 
-        @self.tree.command(name="trade", description="Tawarkan trade kartu ke user lain")
+        @self.tree.command(name="trade", description="Offer a card trade to another user")
         @app_commands.describe(
-            lawan="User yang mau diajak trade",
-            kartu_kamu="Kartu kamu yang mau ditukar",
-            kartu_dia="Kartu dia yang kamu mau",
+            lawan="User to trade with",
+            kartu_kamu="Your card to trade away",
+            kartu_dia="Their card that you want",
         )
         async def trade(interaction: discord.Interaction, lawan: discord.Member, kartu_kamu: str, kartu_dia: str) -> None:
             if lawan.bot or lawan.id == interaction.user.id:
-                await interaction.response.send_message("Ga bisa trade sama bot atau diri sendiri!", ephemeral=True)
+                await interaction.response.send_message("Can't trade with a bot or yourself!", ephemeral=True)
                 return
 
             data = load_data()
@@ -660,10 +660,10 @@ class IdyBot(discord.Client):
             user_b = get_user(data, str(lawan.id))
 
             if user_a["collection"].get(kartu_kamu, 0) < 1:
-                await interaction.response.send_message(f"Kamu ga punya kartu **{kartu_kamu}**!", ephemeral=True)
+                await interaction.response.send_message(f"You don't have **{kartu_kamu}**!", ephemeral=True)
                 return
             if user_b["collection"].get(kartu_dia, 0) < 1:
-                await interaction.response.send_message(f"**{lawan.display_name}** ga punya kartu **{kartu_dia}**!", ephemeral=True)
+                await interaction.response.send_message(f"**{lawan.display_name}** doesn't have **{kartu_dia}**!", ephemeral=True)
                 return
 
             card_a = next((c for c in CARDS if c["name"] == kartu_kamu), None)
@@ -673,22 +673,22 @@ class IdyBot(discord.Client):
 
             view = TradeView(interaction.user, lawan, kartu_kamu, kartu_dia)
             embed = discord.Embed(
-                title="🔄 Tawaran Trade",
-                description=f"{lawan.mention}, **{interaction.user.display_name}** ngajak trade nih!",
+                title="🔄 Trade Offer",
+                description=f"{lawan.mention}, **{interaction.user.display_name}** wants to trade!",
                 color=0x3498db,
             )
             embed.add_field(
-                name=f"{interaction.user.display_name} kasih",
+                name=f"{interaction.user.display_name} offers",
                 value=f"{cfg_a.get('emoji', '')} **{kartu_kamu}**\n`{cfg_a.get('label', '')}`",
                 inline=True,
             )
             embed.add_field(name="⇄", value="", inline=True)
             embed.add_field(
-                name=f"{lawan.display_name} kasih",
+                name=f"{lawan.display_name} offers",
                 value=f"{cfg_b.get('emoji', '')} **{kartu_dia}**\n`{cfg_b.get('label', '')}`",
                 inline=True,
             )
-            embed.set_footer(text="Trade expire dalam 60 detik")
+            embed.set_footer(text="Trade expires in 60 seconds")
 
             await interaction.response.send_message(embed=embed, view=view)
             view.message = await interaction.original_response()
@@ -721,14 +721,14 @@ class IdyBot(discord.Client):
                 if current.lower() in c["name"].lower()
             ][:25]
 
-        @self.tree.command(name="gift", description="Kasih kartu duplikat ke user lain")
+        @self.tree.command(name="gift", description="Give a duplicate card to another user")
         @app_commands.describe(
-            penerima="User yang mau dikasih kartu",
-            kartu="Kartu duplikat yang mau dikasih (harus punya lebih dari 1)",
+            penerima="User to give the card to",
+            kartu="Duplicate card to give (must own more than 1)",
         )
         async def gift(interaction: discord.Interaction, penerima: discord.Member, kartu: str) -> None:
             if penerima.bot or penerima.id == interaction.user.id:
-                await interaction.response.send_message("Ga bisa gift ke bot atau diri sendiri!", ephemeral=True)
+                await interaction.response.send_message("Can't gift to a bot or yourself!", ephemeral=True)
                 return
 
             data = load_data()
@@ -737,7 +737,7 @@ class IdyBot(discord.Client):
 
             if sender["collection"].get(kartu, 0) < 2:
                 await interaction.response.send_message(
-                    f"Kamu ga punya duplikat **{kartu}**! Hanya kartu yang kamu punya lebih dari 1 yang bisa di-gift.",
+                    f"You don't have a duplicate of **{kartu}**! You need more than 1 copy to gift it.",
                     ephemeral=True,
                 )
                 return
@@ -753,12 +753,12 @@ class IdyBot(discord.Client):
             cfg = RARITY_CONFIG[card_obj["rarity"]] if card_obj else {}
 
             embed = discord.Embed(
-                title="🎁 Gift Kartu!",
-                description=f"**{interaction.user.display_name}** ngasih kartu ke {penerima.mention}!",
+                title="🎁 Card Gift!",
+                description=f"**{interaction.user.display_name}** gifted a card to {penerima.mention}!",
                 color=cfg.get("color", 0x3498db),
             )
             embed.add_field(
-                name="Kartu",
+                name="Card",
                 value=f"{cfg.get('emoji', '')} **{kartu}**\n`{cfg.get('label', '')}`",
                 inline=False,
             )
@@ -777,18 +777,18 @@ class IdyBot(discord.Client):
                 results.append(app_commands.Choice(name=f"{emoji} {name} (x{cnt})", value=name))
             return results[:25]
 
-        @self.tree.command(name="claim", description="Claim kartu special eksklusif — hanya tersedia 14 Mei 2026!")
+        @self.tree.command(name="claim", description="Claim the exclusive special card — only available on May 14 2026!")
         async def claim(interaction: discord.Interaction) -> None:
             today = datetime.now(timezone.utc)
             if (today.year, today.month, today.day) != CLAIM_DATE:
                 await interaction.response.send_message(
-                    "❌ Kartu special ini hanya bisa di-claim pada **14 Mei 2026**!", ephemeral=True
+                    "❌ This special card can only be claimed on **May 14, 2026**!", ephemeral=True
                 )
                 return
 
             special_card = next((c for c in CARDS if c["rarity"] == "special"), None)
             if not special_card:
-                await interaction.response.send_message("Kartu special tidak ditemukan.", ephemeral=True)
+                await interaction.response.send_message("Special card not found.", ephemeral=True)
                 return
 
             data = load_data()
@@ -796,7 +796,7 @@ class IdyBot(discord.Client):
 
             if user.get("claimed_special"):
                 await interaction.response.send_message(
-                    "❌ Kamu udah claim kartu special ini sebelumnya!", ephemeral=True
+                    "❌ You've already claimed this special card!", ephemeral=True
                 )
                 return
 
@@ -811,11 +811,11 @@ class IdyBot(discord.Client):
                 color=cfg["color"],
             )
             embed.set_image(url=special_card["url"])
-            embed.set_footer(text="Kartu eksklusif 14 Mei 2026 • Hanya bisa di-claim sekali!")
+            embed.set_footer(text="Exclusive card May 14 2026 • Can only be claimed once!")
             await interaction.response.send_message(embed=embed)
 
-        @self.tree.command(name="merge", description="Gabungkan 2 kartu duplikat jadi kartu rarity lebih tinggi")
-        @app_commands.describe(kartu="Kartu yang mau di-merge (harus punya minimal 3)")
+        @self.tree.command(name="merge", description="Merge 2 duplicate cards into a higher rarity card")
+        @app_commands.describe(kartu="Card to merge (must own at least 3)")
         async def merge(interaction: discord.Interaction, kartu: str) -> None:
             data = load_data()
             user = get_user(data, str(interaction.user.id))
@@ -823,13 +823,13 @@ class IdyBot(discord.Client):
             card_obj = next((c for c in CARDS if c["name"] == kartu), None)
             if card_obj is None or user["collection"].get(kartu, 0) < 3:
                 await interaction.response.send_message(
-                    f"Kamu butuh minimal 3 kartu **{kartu}** buat merge!", ephemeral=True
+                    f"You need at least 3 copies of **{kartu}** to merge!", ephemeral=True
                 )
                 return
 
             if card_obj["rarity"] == "mythic":
                 await interaction.response.send_message(
-                    "Mythic adalah rarity tertinggi, ga bisa di-merge!", ephemeral=True
+                    "Mythic is the highest rarity, can't merge further!", ephemeral=True
                 )
                 return
 
@@ -855,14 +855,14 @@ class IdyBot(discord.Client):
             res_cfg = RARITY_CONFIG[next_rarity]
 
             embed_src = discord.Embed(
-                title="🔀 Kartu yang di-merge",
+                title="🔀 Cards Merged",
                 description=f"{src_cfg['emoji']} **{kartu}** x2\n`{src_cfg['label']}`",
                 color=src_cfg["color"],
             )
             embed_src.set_image(url=card_obj["url"])
 
             embed_res = discord.Embed(
-                title="✨ Hasil Evolusi!",
+                title="✨ Evolution Result!",
                 description=f"{res_cfg['emoji']} **{result_card['name']}**\n`{res_cfg['label']}`",
                 color=res_cfg["color"],
             )
@@ -920,7 +920,7 @@ class IdyBot(discord.Client):
         remaining = COOLDOWN_SECONDS - (now - last)
         if remaining > 0:
             await message.reply(
-                f"⏳ Cooldown! Tunggu **{remaining:.0f} detik** lagi.",
+                f"⏳ Cooldown! Wait **{remaining:.0f}s** more.",
                 mention_author=False,
                 delete_after=5,
             )

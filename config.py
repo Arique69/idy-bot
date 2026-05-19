@@ -5,7 +5,7 @@ from __future__ import annotations
 TRIGGER_WORD: str = "idy"
 
 RARITY_CONFIG: dict = {
-    "common":    {"emoji": "⚪", "color": 0x95a5a6, "label": "Common",    "shout": "Dapet kartu...",           "weight": 50},
+    "common":    {"emoji": "⚪", "color": 0x95a5a6, "label": "Common",    "shout": "Got a card...",            "weight": 50},
     "rare":      {"emoji": "🔵", "color": 0x3498db, "label": "Rare",      "shout": "✨ Rare Pull!",            "weight": 25},
     "epic":      {"emoji": "🟣", "color": 0x9b59b6, "label": "Epic",      "shout": "🌟 EPIC PULL!",           "weight": 15},
     "legendary": {"emoji": "🟡", "color": 0xf1c40f, "label": "Legendary", "shout": "💫 LEGENDARY!!!",         "weight":  8},
