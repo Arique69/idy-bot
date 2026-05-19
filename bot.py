@@ -316,7 +316,6 @@ class IdyBot(discord.Client):
 
                 current = data["current_condition"][0]
                 area = data.get("nearest_area", [{}])[0]
-                area_name = area.get("areaName", [{}])[0].get("value", city)
                 country = area.get("country", [{}])[0].get("value", "")
                 temp = current["temp_C"]
                 feels_like = current["FeelsLikeC"]
@@ -325,7 +324,7 @@ class IdyBot(discord.Client):
                 desc = current["weatherDesc"][0]["value"]
 
                 embed = discord.Embed(
-                    title=f"{area_name}{', ' + country if country else ''} — Weather Today",
+                    title=f"{city.title()}{', ' + country if country else ''} — Weather Today",
                     color=discord.Color.blue(),
                 )
                 embed.add_field(name="Condition", value=desc, inline=False)
