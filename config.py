@@ -13,6 +13,29 @@ RARITY_CONFIG: dict = {
     "special":   {"emoji": "🟢", "color": 0x2ecc71, "label": "SPECIAL",   "shout": "👑 THE CHOSEN ONE!!!! 👑", "weight":  0},
 }
 
+ELEMENTS: dict = {
+    "Ngantuk": {"emoji": "😴", "label": "Ngantuk"},
+    "Nyocot":  {"emoji": "🗣️", "label": "Nyocot"},
+    "Baper":   {"emoji": "😭", "label": "Baper"},
+    "Sigma":   {"emoji": "😎", "label": "Sigma"},
+    "Pejuang": {"emoji": "⚔️", "label": "Pejuang"},
+    "Lapar":   {"emoji": "🍗", "label": "Lapar"},
+    "Rusdi":   {"emoji": "🤙", "label": "Rusdi"},
+    "Misteri": {"emoji": "🌀", "label": "Misteri"},
+}
+
+# attacker element -> list of defender elements it beats
+ELEMENT_ADVANTAGES: dict[str, list[str]] = {
+    "Sigma":   ["Baper"],
+    "Baper":   ["Nyocot"],
+    "Nyocot":  ["Ngantuk"],
+    "Ngantuk": ["Pejuang"],
+    "Pejuang": ["Sigma", "Lapar"],
+    "Lapar":   ["Nyocot", "Baper", "Ngantuk"],
+    "Rusdi":   ["Misteri"],
+    "Misteri": [],
+}
+
 def _atk(name: str, rarity: str) -> int:
     _ranges = {
         "common": (10, 30), "rare": (25, 50), "epic": (45, 75),
@@ -31,6 +54,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Halah Nyocot", "common"),
+        "element": "Nyocot",
         "skill": None,
     },
     {
@@ -39,6 +63,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Pura-pura ga liat", "common"),
+        "element": "Misteri",
         "skill": None,
     },
     {
@@ -47,6 +72,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Ngabuburit yuk", "common"),
+        "element": "Lapar",
         "skill": None,
     },
     {
@@ -55,6 +81,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Malas Banget", "common"),
+        "element": "Ngantuk",
         "skill": None,
     },
     {
@@ -63,6 +90,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Nguwawor", "common"),
+        "element": "Ngantuk",
         "skill": None,
     },
     {
@@ -71,6 +99,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Andriana PSHT", "common"),
+        "element": "Pejuang",
         "skill": None,
     },
     {
@@ -79,6 +108,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Tolong dijelaskan", "common"),
+        "element": "Baper",
         "skill": None,
     },
     {
@@ -87,6 +117,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Pegi Kau Suki", "common"),
+        "element": "Nyocot",
         "skill": None,
     },
     {
@@ -95,6 +126,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Lebaran", "common"),
+        "element": "Lapar",
         "skill": None,
     },
     {
@@ -103,6 +135,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Bohong", "common"),
+        "element": "Nyocot",
         "skill": None,
     },
     {
@@ -111,6 +144,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Selamat Berbuka", "common"),
+        "element": "Lapar",
         "skill": None,
     },
     {
@@ -119,6 +153,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Admin Telah Tiba", "common"),
+        "element": "Sigma",
         "skill": None,
     },
     {
@@ -127,6 +162,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Rusdi Kapan yh", "common"),
+        "element": "Rusdi",
         "skill": None,
     },
     {
@@ -135,6 +171,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("My Bini", "common"),
+        "element": "Baper",
         "skill": None,
     },
     # --- Rare 🔵 ---
@@ -144,6 +181,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Bertolak Belakang", "rare"),
+        "element": "Misteri",
         "skill": None,
     },
     {
@@ -152,6 +190,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Bercyanda", "rare"),
+        "element": "Nyocot",
         "skill": None,
     },
     {
@@ -160,6 +199,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Bodo Amat", "rare"),
+        "element": "Sigma",
         "skill": None,
     },
     {
@@ -168,6 +208,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Laba-laba Sunda", "rare"),
+        "element": "Misteri",
         "skill": None,
     },
     {
@@ -176,6 +217,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Spongebob Tuff", "rare"),
+        "element": "Pejuang",
         "skill": None,
     },
     {
@@ -184,6 +226,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Idy Dame yo", "rare"),
+        "element": "Baper",
         "skill": None,
     },
     {
@@ -192,6 +235,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Malas", "rare"),
+        "element": "Ngantuk",
         "skill": None,
     },
     {
@@ -200,6 +244,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Pak Cik Peduli?", "rare"),
+        "element": "Misteri",
         "skill": None,
     },
     {
@@ -208,6 +253,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Sengaja Ya Buat Aku Marah", "rare"),
+        "element": "Baper",
         "skill": None,
     },
     {
@@ -216,6 +262,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Gelombang Laut", "rare"),
+        "element": "Misteri",
         "skill": None,
     },
     {
@@ -224,6 +271,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Amba Menangis", "rare"),
+        "element": "Baper",
         "skill": None,
     },
     {
@@ -232,6 +280,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Mana Buktinya", "rare"),
+        "element": "Nyocot",
         "skill": None,
     },
     {
@@ -240,6 +289,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Pilot Amba", "rare"),
+        "element": "Sigma",
         "skill": None,
     },
     {
@@ -248,6 +298,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Rewel Cipok", "rare"),
+        "element": "Nyocot",
         "skill": None,
     },
     {
@@ -256,6 +307,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Bobok", "rare"),
+        "element": "Ngantuk",
         "skill": None,
     },
     {
@@ -264,6 +316,7 @@ CARDS: list[dict] = [
         "rarity": "rare",
         "power": 250,
         "atk": _atk("Ayah Tidur", "rare"),
+        "element": "Ngantuk",
         "skill": None,
     },
     # --- Epic 🟣 ---
@@ -273,6 +326,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Sodara", "epic"),
+        "element": "Rusdi",
         "skill": {"name": "Koneksi Sodara", "desc": "Family pulls strings behind the scenes", "bonus": 0.08},
     },
     {
@@ -281,6 +335,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Kenapa?", "epic"),
+        "element": "Baper",
         "skill": {"name": "Pertanyaan Filosofis", "desc": "Opponent is too confused to focus", "bonus": 0.06},
     },
     {
@@ -289,6 +344,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Rusdi Balon", "epic"),
+        "element": "Rusdi",
         "skill": {"name": "Melayang", "desc": "Floats above the conflict", "bonus": 0.07},
     },
     {
@@ -297,6 +353,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Mahkota Mu King", "epic"),
+        "element": "Sigma",
         "skill": {"name": "Aura Raja", "desc": "Royal presence intimidates opponent", "bonus": 0.10},
     },
     {
@@ -305,6 +362,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Owo Swag", "epic"),
+        "element": "Sigma",
         "skill": {"name": "Too Swag", "desc": "Opponent can't help but be impressed", "bonus": 0.08},
     },
     {
@@ -313,6 +371,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Menggugah Selera", "epic"),
+        "element": "Lapar",
         "skill": {"name": "Lapar Duluan", "desc": "Makes opponent hungry, loses focus", "bonus": 0.07},
     },
     {
@@ -321,6 +380,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Solo Baca Buku", "epic"),
+        "element": "Sigma",
         "skill": {"name": "Galaxy Brain", "desc": "Big brain moves", "bonus": 0.09},
     },
     {
@@ -329,6 +389,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Ape pula bodoh nih", "epic"),
+        "element": "Nyocot",
         "skill": {"name": "Dismissal Aura", "desc": "So annoying opponent ragequits early", "bonus": 0.06},
     },
     {
@@ -337,6 +398,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Tertawa Tapi Teluka", "epic"),
+        "element": "Baper",
         "skill": {"name": "Trauma Tertawa", "desc": "Hides pain with laughter, catches opponent off guard", "bonus": 0.08},
     },
     {
@@ -345,6 +407,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Terompet Pemanggil Pasukan", "epic"),
+        "element": "Pejuang",
         "skill": {"name": "Backup Datang!", "desc": "Calls the whole squad", "bonus": 0.12},
     },
     {
@@ -353,6 +416,7 @@ CARDS: list[dict] = [
         "rarity": "epic",
         "power": 450,
         "atk": _atk("Owo Sigma", "epic"),
+        "element": "Sigma",
         "skill": {"name": "Sigma Grindset", "desc": "Never stops grinding", "bonus": 0.09},
     },
     # --- Legendary 🟡 ---
@@ -362,6 +426,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("Toyota Supra 2000HP BRAkTAKTAK", "legendary"),
+        "element": "Pejuang",
         "skill": {"name": "2000HP Drift", "desc": "Goes BRAKTAKTAK and overtakes everything", "bonus": 0.15},
     },
     {
@@ -370,6 +435,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("Merah", "legendary"),
+        "element": "Baper",
         "skill": {"name": "Murka Merah", "desc": "Rage mode activated", "bonus": 0.13},
     },
     {
@@ -378,6 +444,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("Tirai Misterius", "legendary"),
+        "element": "Misteri",
         "skill": {"name": "Tirai Terbuka", "desc": "Nobody knows what's behind. Truly unpredictable", "bonus": 0.12},
     },
 
@@ -387,6 +454,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("Solo Swag", "legendary"),
+        "element": "Sigma",
         "skill": {"name": "Solo Mode ON", "desc": "Locked in, impossible to distract", "bonus": 0.14},
     },
     {
@@ -395,6 +463,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("Rusdi  nah ini", "legendary"),
+        "element": "Rusdi",
         "skill": {"name": "Udah Nah Ini", "desc": "When Rusdi says this, it's over", "bonus": 0.13},
     },
     {
@@ -403,6 +472,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("Rusdi Informasi Palsu", "legendary"),
+        "element": "Rusdi",
         "skill": {"name": "Hoaks Tersebar", "desc": "Opponent believes fake news and panics", "bonus": 0.11},
     },
     {
@@ -411,6 +481,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("Dimas Ketoprak", "legendary"),
+        "element": "Lapar",
         "skill": {"name": "Ketoprak Energy", "desc": "Powered by ketoprak, unstoppable", "bonus": 0.13},
     },
     {
@@ -419,6 +490,7 @@ CARDS: list[dict] = [
         "rarity": "legendary",
         "power": 700,
         "atk": _atk("King Ronaldo", "legendary"),
+        "element": "Sigma",
         "skill": {"name": "SIUUUU", "desc": "The GOAT never loses", "bonus": 0.15},
     },
     # --- Common ⚪ (extra) ---
@@ -428,6 +500,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Rusdi Alamak", "common"),
+        "element": "Rusdi",
         "skill": None,
     },
     {
@@ -436,6 +509,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Captain Amba", "common"),
+        "element": "Pejuang",
         "skill": None,
     },
     {
@@ -444,6 +518,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("SHSC PSHT", "common"),
+        "element": "Pejuang",
         "skill": None,
     },
     {
@@ -452,6 +527,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Kewer-Kewer Sopan", "common"),
+        "element": "Misteri",
         "skill": None,
     },
     {
@@ -460,6 +536,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Yes King", "common"),
+        "element": "Sigma",
         "skill": None,
     },
     {
@@ -468,6 +545,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Ladesh Pelatihan Ketat", "common"),
+        "element": "Pejuang",
         "skill": None,
     },
     {
@@ -476,6 +554,7 @@ CARDS: list[dict] = [
         "rarity": "common",
         "power": 100,
         "atk": _atk("Amba Gua Lagi Yang Kena", "common"),
+        "element": "Baper",
         "skill": None,
     },
     # --- Mythic 🔴 ---
@@ -485,6 +564,7 @@ CARDS: list[dict] = [
         "rarity": "mythic",
         "power": 900,
         "atk": _atk("Ayam Madu Panggang", "mythic"),
+        "element": "Lapar",
         "skill": {"name": "Juicy AF", "desc": "So good it's distracting", "bonus": 0.18},
     },
     {
@@ -493,6 +573,7 @@ CARDS: list[dict] = [
         "rarity": "mythic",
         "power": 900,
         "atk": _atk("Geol-geol", "mythic"),
+        "element": "Misteri",
         "skill": {"name": "Geol Hypnosis", "desc": "Hypnotizes opponent with the wiggle", "bonus": 0.20},
     },
     {
@@ -501,6 +582,7 @@ CARDS: list[dict] = [
         "rarity": "mythic",
         "power": 900,
         "atk": _atk("Linggis RGB", "mythic"),
+        "element": "Pejuang",
         "skill": {"name": "RGB Supremacy", "desc": "RGB makes everything better, scientifically proven", "bonus": 0.22},
     },
     {
@@ -509,6 +591,7 @@ CARDS: list[dict] = [
         "rarity": "mythic",
         "power": 900,
         "atk": _atk("Gold Lil Nas", "mythic"),
+        "element": "Sigma",
         "skill": {"name": "Old Town Road", "desc": "Been riding for too long, can't be stopped", "bonus": 0.20},
     },
     # --- Special 💚 ---
@@ -518,6 +601,7 @@ CARDS: list[dict] = [
         "rarity": "special",
         "power": 9999,
         "atk": 9999,
+        "element": "Pejuang",
         "skill": {"name": "Ankle Snap", "desc": "9999 ATK speaks for itself", "bonus": 0.50},
     },
 ]

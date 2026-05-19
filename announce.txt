@@ -1,7 +1,25 @@
-⚔️ **Duel System Update!**
+🌀 **ELEMENT SYSTEM MASUK!**
 
-• Setiap kartu sekarang punya **ATK stat** unik — beda kartu beda kekuatan, even sesama rarity!
-• Kartu Epic ke atas punya **passive skill** yang ngaruh ke odds duel
-• Odds duel sekarang dihitung dari rarity + ATK + skill — bukan cuma rarity doang
-• ATK gap sekarang kerasa — common 28 ATK vs 22 ATK udah beda odds-nya
-• Cek stat kartu kamu lewat `/kartu` atau langsung keliatan pas pull dan duel 👀
+Setiap kartu sekarang punya **elemen** — dan elemen ngaruh ke odds duel!
+
+Ada 8 elemen goofy:
+😴 **Ngantuk** — terlalu mager buat ngurusin apapun
+🗣️ **Nyocot** — ga bisa diem, drama terus
+😭 **Baper** — sensitif level dewa
+😎 **Sigma** — unbothered, grindset, ga peduli perasaan orang
+⚔️ **Pejuang** — PSHT energy, siap perang kapanpun
+🍗 **Lapar** — jangan pernah remehkan orang lapar
+🤙 **Rusdi** — chaotic neutral, vibes tersendiri
+🌀 **Misteri** — ga ada yang tau, bahkan orangnya sendiri
+
+**Matchup (attacker dapet +5% odds):**
+😎 Sigma → 😭 Baper
+😭 Baper → 🗣️ Nyocot
+🗣️ Nyocot → 😴 Ngantuk
+😴 Ngantuk → ⚔️ Pejuang
+⚔️ Pejuang → 😎 Sigma & 🍗 Lapar
+🍗 Lapar → 🗣️ Nyocot, 😭 Baper & 😴 Ngantuk
+🤙 Rusdi → 🌀 Misteri
+🌀 Misteri — 20% chance dodge kalau kena disadvantage (random aja sih)
+
+Elemen keliatan pas pull kartu, `/kartu`, dan duel. Cek koleksi kamu sekarang!

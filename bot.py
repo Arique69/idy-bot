@@ -15,7 +15,7 @@ from discord import app_commands
 from dotenv import load_dotenv
 import os
 
-from config import CARDS, RARITY_CONFIG, TRIGGER_WORD
+from config import CARDS, RARITY_CONFIG, TRIGGER_WORD, ELEMENTS, ELEMENT_ADVANTAGES
 from data import load_data, save_data, get_user
 
 load_dotenv()
@@ -45,7 +45,18 @@ def compute_win_chance(card_a: dict, card_b: dict) -> float:
     atk_mod = (card_a["atk"] - card_b["atk"]) / 200
     skill_a = card_a["skill"]["bonus"] if card_a.get("skill") else 0
     skill_b = card_b["skill"]["bonus"] if card_b.get("skill") else 0
-    return max(0.05, min(0.95, base + atk_mod + skill_a - skill_b))
+    elem_a = card_a.get("element", "")
+    elem_b = card_b.get("element", "")
+    elem_mod = 0.0
+    if elem_b in ELEMENT_ADVANTAGES.get(elem_a, []):
+        elem_mod += 0.05
+    if elem_a in ELEMENT_ADVANTAGES.get(elem_b, []):
+        # Misteri has 20% chance to dodge the penalty
+        if elem_a == "Misteri" and random.random() < 0.20:
+            pass
+        else:
+            elem_mod -= 0.05
+    return max(0.05, min(0.95, base + atk_mod + skill_a - skill_b + elem_mod))
 
 
 CLAIM_DATE = (2026, 5, 14)  # year, month, day
@@ -191,7 +202,9 @@ class TradeView(discord.ui.View):
 
 def _build_card_embed(card: dict, is_pity: bool = False) -> discord.Embed:
     rarity = RARITY_CONFIG[card["rarity"]]
-    desc = f"{rarity['emoji']} **{card['name']}**\n`{rarity['label']}` | ⚔️ ATK {card['atk']}"
+    elem = ELEMENTS.get(card.get("element", ""), None)
+    elem_str = f" | {elem['emoji']} {elem['label']}" if elem else ""
+    desc = f"{rarity['emoji']} **{card['name']}**\n`{rarity['label']}` | ⚔️ ATK {card['atk']}{elem_str}"
     if card.get("skill"):
         desc += f"\n✨ **{card['skill']['name']}** — {card['skill']['desc']}"
     embed = discord.Embed(
@@ -446,7 +459,9 @@ class IdyBot(discord.Client):
             pct_b = 100 - pct_a
 
             def card_field(card, cfg, pct):
-                lines = [f"{cfg['emoji']} **{card['name']}**", f"`{cfg['label']}` | ⚔️ ATK {card['atk']}", f"🎲 {pct:.0f}%"]
+                elem = ELEMENTS.get(card.get("element", ""), None)
+                elem_str = f" | {elem['emoji']} {elem['label']}" if elem else ""
+                lines = [f"{cfg['emoji']} **{card['name']}**", f"`{cfg['label']}` | ⚔️ ATK {card['atk']}{elem_str}", f"🎲 {pct:.0f}%"]
                 if card.get("skill"):
                     lines.append(f"✨ **{card['skill']['name']}** — {card['skill']['desc']} (+{card['skill']['bonus']*100:.0f}%)")
                 return "\n".join(lines)
@@ -522,7 +537,9 @@ class IdyBot(discord.Client):
                 return
 
             rarity = RARITY_CONFIG[card["rarity"]]
-            desc = f"{rarity['emoji']} `{rarity['label']}` | ⚔️ ATK {card['atk']}"
+            elem = ELEMENTS.get(card.get("element", ""), None)
+            elem_str = f" | {elem['emoji']} {elem['label']}" if elem else ""
+            desc = f"{rarity['emoji']} `{rarity['label']}` | ⚔️ ATK {card['atk']}{elem_str}"
             if card.get("skill"):
                 desc += f"\n✨ **{card['skill']['name']}** — {card['skill']['desc']} (+{card['skill']['bonus']*100:.0f}%)"
             embed = discord.Embed(
