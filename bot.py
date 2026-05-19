@@ -53,7 +53,7 @@ def compute_win_chance(card_a: dict, card_b: dict) -> tuple[float, bool]:
     if elem_b in ELEMENT_ADVANTAGES.get(elem_a, []):
         elem_mod += 0.05
     if elem_a in ELEMENT_ADVANTAGES.get(elem_b, []):
-        if elem_a == "Mystery" and random.random() < 0.20:
+        if elem_a == "Misteri" and random.random() < 0.20:
             misteri_dodged = True
         else:
             elem_mod -= 0.05
@@ -101,16 +101,16 @@ _FINISHERS_MISTERI = [
 ]
 
 _FINISHERS_ELEMENT: dict[tuple[str, str], list[str]] = {
-    ("Sigma", "Emotional"):    ["emotions don't work on him", "he simply did not care", "unbothered. completely."],
-    ("Emotional", "Loudmouth"):["the tears shut him up", "drama beats noise every time", "feelings > words"],
-    ("Loudmouth", "Sleepy"):   ["the nonstop talking woke him up", "you can't sleep through that", "words as an alarm clock"],
-    ("Sleepy", "Warrior"):     ["too tired to even train today", "the warrior forgot to set an alarm", "sleep beats discipline"],
-    ("Warrior", "Sigma"):      ["grind has physical limits", "sigma met someone who actually trained", "real effort beats mindset"],
-    ("Warrior", "Hungry"):     ["training beats hunger today", "discipline overpowered the stomach", "the warrior ate before the fight"],
-    ("Hungry", "Loudmouth"):   ["hunger is louder than words", "he was too hungry to argue", "food motivation is real"],
-    ("Hungry", "Emotional"):   ["hunger overrides emotion", "no time to be sad when starving", "biological needs first"],
-    ("Hungry", "Sleepy"):      ["you can't sleep when you're this hungry", "hunger woke him up", "the stomach said no"],
-    ("Rusdi", "Mystery"):      ["Rusdi always finds out", "no secret survives Rusdi", "the mystery was solved immediately"],
+    ("Sigma", "Baper"):    ["emotions don't work on him", "he simply did not care", "unbothered. completely."],
+    ("Baper", "Nyocot"):   ["the tears shut him up", "drama beats noise every time", "feelings > words"],
+    ("Nyocot", "Ngantuk"): ["the nonstop talking woke him up", "you can't sleep through that", "words as an alarm clock"],
+    ("Ngantuk", "Pejuang"):["too tired to even train today", "the warrior forgot to set an alarm", "sleep beats discipline"],
+    ("Pejuang", "Sigma"):  ["grind has physical limits", "sigma met someone who actually trained", "real effort beats mindset"],
+    ("Pejuang", "Lapar"):  ["training beats hunger today", "discipline overpowered the stomach", "the warrior ate before the fight"],
+    ("Lapar", "Nyocot"):   ["hunger is louder than words", "he was too hungry to argue", "food motivation is real"],
+    ("Lapar", "Baper"):    ["hunger overrides emotion", "no time to be sad when starving", "biological needs first"],
+    ("Lapar", "Ngantuk"):  ["you can't sleep when you're this hungry", "hunger woke him up", "the stomach said no"],
+    ("Rusdi", "Misteri"):  ["Rusdi always finds out", "no secret survives Rusdi", "the mystery was solved immediately"],
 }
 
 
