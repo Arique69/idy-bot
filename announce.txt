@@ -1,25 +1,25 @@
-🌀 **ELEMENT SYSTEM MASUK!**
+🌀 **ELEMENT SYSTEM IS HERE!**
 
-Setiap kartu sekarang punya **elemen** — dan elemen ngaruh ke odds duel!
+Every card now has an **element** — and elements affect duel odds!
 
-Ada 8 elemen goofy:
-😴 **Ngantuk** — terlalu mager buat ngurusin apapun
-🗣️ **Nyocot** — ga bisa diem, drama terus
-😭 **Baper** — sensitif level dewa
-😎 **Sigma** — unbothered, grindset, ga peduli perasaan orang
-⚔️ **Pejuang** — PSHT energy, siap perang kapanpun
-🍗 **Lapar** — jangan pernah remehkan orang lapar
-🤙 **Rusdi** — chaotic neutral, vibes tersendiri
-🌀 **Misteri** — ga ada yang tau, bahkan orangnya sendiri
+8 goofy elements:
+😴 **Sleepy** — too lazy to care about anything
+🗣️ **Loudmouth** — can't stop talking, always drama
+😭 **Emotional** — sensitive on a spiritual level
+😎 **Sigma** — unbothered, grindset, doesn't care about feelings
+⚔️ **Warrior** — PSHT energy, ready to fight anytime
+🍗 **Hungry** — never underestimate a hungry person
+🤙 **Rusdi** — chaotic neutral, unique vibes only
+🌀 **Mystery** — nobody knows, not even themselves
 
-**Matchup (attacker dapet +5% odds):**
-😎 Sigma → 😭 Baper
-😭 Baper → 🗣️ Nyocot
-🗣️ Nyocot → 😴 Ngantuk
-😴 Ngantuk → ⚔️ Pejuang
-⚔️ Pejuang → 😎 Sigma & 🍗 Lapar
-🍗 Lapar → 🗣️ Nyocot, 😭 Baper & 😴 Ngantuk
-🤙 Rusdi → 🌀 Misteri
-🌀 Misteri — 20% chance dodge kalau kena disadvantage (random aja sih)
+**Matchups (attacker gets +5% odds):**
+😎 Sigma → 😭 Emotional
+😭 Emotional → 🗣️ Loudmouth
+🗣️ Loudmouth → 😴 Sleepy
+😴 Sleepy → ⚔️ Warrior
+⚔️ Warrior → 😎 Sigma & 🍗 Hungry
+🍗 Hungry → 🗣️ Loudmouth, 😭 Emotional & 😴 Sleepy
+🤙 Rusdi → 🌀 Mystery
+🌀 Mystery — 20% chance to dodge any disadvantage (it's a mystery)
 
-Elemen keliatan pas pull kartu, `/kartu`, dan duel. Cek koleksi kamu sekarang!
+Element shows on card pull, `/kartu`, and duel. Check your collection now!
