@@ -37,7 +37,8 @@ _cooldowns: dict[int, float] = {}
 RARITY_ORDER = ["common", "rare", "epic", "legendary", "mythic", "special"]
 
 
-def compute_win_chance(card_a: dict, card_b: dict) -> float:
+def compute_win_chance(card_a: dict, card_b: dict) -> tuple[float, bool]:
+    """Returns (win_chance_for_a, misteri_dodged)."""
     rank_a = RARITY_ORDER.index(card_a["rarity"])
     rank_b = RARITY_ORDER.index(card_b["rarity"])
     gap = rank_a - rank_b
@@ -48,15 +49,87 @@ def compute_win_chance(card_a: dict, card_b: dict) -> float:
     elem_a = card_a.get("element", "")
     elem_b = card_b.get("element", "")
     elem_mod = 0.0
+    misteri_dodged = False
     if elem_b in ELEMENT_ADVANTAGES.get(elem_a, []):
         elem_mod += 0.05
     if elem_a in ELEMENT_ADVANTAGES.get(elem_b, []):
-        # Misteri has 20% chance to dodge the penalty
         if elem_a == "Misteri" and random.random() < 0.20:
-            pass
+            misteri_dodged = True
         else:
             elem_mod -= 0.05
-    return max(0.05, min(0.95, base + atk_mod + skill_a - skill_b + elem_mod))
+    return max(0.05, min(0.95, base + atk_mod + skill_a - skill_b + elem_mod)), misteri_dodged
+
+
+_FINISHERS_UNDERDOG = [
+    "nobody told him he was supposed to lose",
+    "the math was wrong actually",
+    "chaos wins again",
+    "this is why we play the game",
+    "the odds filed a complaint",
+    "science has no explanation for this",
+    "probability left the server",
+    "he didn't get the memo",
+]
+
+_FINISHERS_DOMINANT = [
+    "as expected. moving on.",
+    "this was never a competition",
+    "called it.",
+    "next.",
+    "not even close",
+    "the result was obvious before it started",
+    "destiny was very clear about this one",
+]
+
+_FINISHERS_CLOSE = [
+    "pure coin flip energy",
+    "literally could have gone either way",
+    "the universe decided",
+    "a very serious and legitimate battle",
+    "both tried. one tried slightly more.",
+    "the margin was basically nothing",
+    "extremely professional fight",
+]
+
+_FINISHERS_MISTERI = [
+    "nobody knows how",
+    "the curtain reveals nothing",
+    "statistically this shouldn't happen",
+    "even the winner looks confused",
+    "no witnesses. no explanation.",
+    "the mystery remains",
+]
+
+_FINISHERS_ELEMENT: dict[tuple[str, str], list[str]] = {
+    ("Sigma", "Baper"):   ["emotions don't work on him", "he simply did not care", "unbothered. completely."],
+    ("Baper", "Nyocot"):  ["the tears shut him up", "drama beats noise every time", "feelings > words"],
+    ("Nyocot", "Ngantuk"):["the nonstop talking woke him up", "you can't sleep through that", "words as an alarm clock"],
+    ("Ngantuk", "Pejuang"):["too tired to even train today", "the warrior forgot to set an alarm", "sleep beats discipline"],
+    ("Pejuang", "Sigma"): ["grind has physical limits", "sigma met someone who actually trained", "real effort beats mindset"],
+    ("Pejuang", "Lapar"): ["training beats hunger today", "discipline overpowered the stomach", "the warrior ate before the fight"],
+    ("Lapar", "Nyocot"):  ["hunger is louder than words", "he was too hungry to argue", "food motivation is real"],
+    ("Lapar", "Baper"):   ["hunger overrides emotion", "no time to be sad when starving", "biological needs first"],
+    ("Lapar", "Ngantuk"): ["you can't sleep when you're this hungry", "hunger woke him up", "the stomach said no"],
+    ("Rusdi", "Misteri"): ["Rusdi always finds out", "no secret survives Rusdi", "the mystery was solved immediately"],
+}
+
+
+def get_finisher(
+    win_chance_winner: float,
+    elem_winner: str,
+    elem_loser: str,
+    misteri_dodged: bool,
+) -> str:
+    if misteri_dodged:
+        return random.choice(_FINISHERS_MISTERI)
+    matchup_lines = _FINISHERS_ELEMENT.get((elem_winner, elem_loser))
+    if matchup_lines:
+        return random.choice(matchup_lines)
+    if win_chance_winner <= 0.30:
+        return random.choice(_FINISHERS_UNDERDOG)
+    if win_chance_winner >= 0.70:
+        return random.choice(_FINISHERS_DOMINANT)
+    return random.choice(_FINISHERS_CLOSE)
 
 
 CLAIM_DATE = (2026, 5, 14)  # year, month, day
@@ -436,23 +509,34 @@ class IdyBot(discord.Client):
             user_a = get_user(data, str(interaction.user.id))
             user_b = get_user(data, str(lawan.id))
 
-            win_chance_a = compute_win_chance(card_a, card_b)
+            win_chance_a, misteri_dodged = compute_win_chance(card_a, card_b)
             a_wins = random.random() < win_chance_a
 
             if a_wins:
                 result = f"🏆 **{interaction.user.display_name}** menang!"
                 color = 0x2ecc71
                 winner_card = card_a
+                loser_card = card_b
+                win_chance_winner = win_chance_a
                 user_a["duel_wins"] = user_a.get("duel_wins", 0) + 1
                 user_b["duel_losses"] = user_b.get("duel_losses", 0) + 1
             else:
                 result = f"🏆 **{lawan.display_name}** menang!"
                 color = 0xe74c3c
                 winner_card = card_b
+                loser_card = card_a
+                win_chance_winner = 1 - win_chance_a
                 user_b["duel_wins"] = user_b.get("duel_wins", 0) + 1
                 user_a["duel_losses"] = user_a.get("duel_losses", 0) + 1
 
             save_data(data)
+
+            finisher = get_finisher(
+                win_chance_winner,
+                winner_card.get("element", ""),
+                loser_card.get("element", ""),
+                misteri_dodged,
+            )
 
             embed = discord.Embed(title="⚔️ DUEL KARTU!", description=result, color=color)
             pct_a = win_chance_a * 100
@@ -470,6 +554,7 @@ class IdyBot(discord.Client):
             embed.add_field(name="VS", value="⚔️", inline=True)
             embed.add_field(name=lawan.display_name, value=card_field(card_b, cfg_b, pct_b), inline=True)
             embed.add_field(name="🃏 Winner Card", value=f"**{winner_card['name']}**", inline=False)
+            embed.add_field(name="💬", value=f"*{finisher}*", inline=False)
             embed.set_image(url=winner_card["url"])
 
             await interaction.response.send_message(embed=embed)
