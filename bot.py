@@ -299,17 +299,25 @@ class IdyBot(discord.Client):
         self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self) -> None:
-        @self.tree.command(name="cuaca", description="Check today's weather in Jakarta")
-        async def cuaca(interaction: discord.Interaction) -> None:
+        @self.tree.command(name="cuaca", description="Check today's weather for any city")
+        @app_commands.describe(city="City name (default: Jakarta)")
+        async def cuaca(interaction: discord.Interaction, city: str = "Jakarta") -> None:
             await interaction.response.defer()
             try:
                 async with aiohttp.ClientSession() as session:
                     async with session.get(
-                        "https://wttr.in/Jakarta?format=j1", timeout=aiohttp.ClientTimeout(total=10)
+                        f"https://wttr.in/{city}?format=j1", timeout=aiohttp.ClientTimeout(total=10)
                     ) as resp:
                         data = await resp.json(content_type=None)
 
+                if data.get("current_condition") is None:
+                    await interaction.followup.send(f"City `{city}` not found.")
+                    return
+
                 current = data["current_condition"][0]
+                area = data.get("nearest_area", [{}])[0]
+                area_name = area.get("areaName", [{}])[0].get("value", city)
+                country = area.get("country", [{}])[0].get("value", "")
                 temp = current["temp_C"]
                 feels_like = current["FeelsLikeC"]
                 humidity = current["humidity"]
@@ -317,7 +325,7 @@ class IdyBot(discord.Client):
                 desc = current["weatherDesc"][0]["value"]
 
                 embed = discord.Embed(
-                    title="Jakarta Weather Today",
+                    title=f"{area_name}{', ' + country if country else ''} — Weather Today",
                     color=discord.Color.blue(),
                 )
                 embed.add_field(name="Condition", value=desc, inline=False)
