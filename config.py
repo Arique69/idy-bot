@@ -453,7 +453,7 @@ CARDS: list[dict] = [
         "name": "Solo Swag",
         "rarity": "legendary",
         "power": 700,
-        "atk": _atk("Solo Swag", "legendary"),
+        "atk": 93,
         "element": "Sigma",
         "skill": {"name": "Solo Mode ON", "desc": "Locked in, impossible to distract", "bonus": 0.14},
     },
