@@ -493,6 +493,15 @@ CARDS: list[dict] = [
         "element": "Sigma",
         "skill": {"name": "SIUUUU", "desc": "The GOAT never loses", "bonus": 0.15},
     },
+    {
+        "url": "https://tenor.com/view/rusdi-ngawi-bogor-si-imut-gif-11342777735878759319",
+        "name": "Tarian Asli Ngawi",
+        "rarity": "legendary",
+        "power": 700,
+        "atk": _atk("King Ronaldo", "legendary"),
+        "element": "Rusdi",
+        "skill": {"name": "Ngawi Dance", "desc": "The dance that never stop", "bonus": 0.12},
+    },
     # --- Common ⚪ (extra) ---
     {
         "url": "https://media.discordapp.net/attachments/640554506525868082/1502362384562393138/1e9cc19e8ab2ae01baa1c70ca3a0012d.png?ex=69ff6f81&is=69fe1e01&hm=6352cee0657bb0cf3ecc69be37209f218534f9bf782d0489fea5b3b05060cd36&=&format=webp&quality=lossless",

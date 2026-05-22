@@ -13,7 +13,16 @@
       "Bash(npm install *)",
       "WebFetch(domain:giphy.com)",
       "Bash(rtk ls *)",
-      "Bash(python *)"
+      "Bash(python *)",
+      "Bash(rtk read *)",
+      "Bash(rtk grep *)",
+      "Bash(sh \"C:/Users/user0/.claude/statusline-command.sh\")",
+      "PowerShell(Get-Command *)",
+      "Bash(\"C:/Program Files/Git/bin/sh.exe\" \"C:/Users/user0/.claude/statusline-command.sh\")",
+      "Bash(dir D:\\\\Ariq\\\\idy-bot\\\\*.py)",
+      "Skill(superpowers:subagent-driven-development)",
+      "Bash(rtk pytest *)",
+      "Skill(superpowers:finishing-a-development-branch)"
     ]
   }
 }
