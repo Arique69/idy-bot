@@ -494,11 +494,11 @@ CARDS: list[dict] = [
         "skill": {"name": "SIUUUU", "desc": "The GOAT never loses", "bonus": 0.15},
     },
     {
-        "url": "https://tenor.com/view/rusdi-ngawi-bogor-si-imut-gif-11342777735878759319",
+        "url": "https://c.tenor.com/nWmkQRFDU5cAAAAd/tenor.gif",
         "name": "Tarian Asli Ngawi",
         "rarity": "legendary",
         "power": 700,
-        "atk": _atk("King Ronaldo", "legendary"),
+        "atk": _atk("Tarian Asli Ngawi", "legendary"),
         "element": "Rusdi",
         "skill": {"name": "Ngawi Dance", "desc": "The dance that never stop", "bonus": 0.12},
     },
