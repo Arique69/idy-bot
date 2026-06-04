@@ -1080,6 +1080,40 @@ class IdyBot(discord.Client):
             embed.set_footer(text="Come back in 24 hours for your next reward!")
             await interaction.response.send_message(embed=embed)
 
+        @self.tree.command(name="toko", description="Open the IDY shop")
+        async def toko(interaction: discord.Interaction) -> None:
+            data = load_data()
+            user = get_user(data, str(interaction.user.id))
+            embed = _build_shop_embed(user["coins"])
+            await interaction.response.send_message(embed=embed, view=ShopSelectView(interaction.user.id))
+
+        @self.tree.command(name="profil", description="View your IDY profile")
+        @app_commands.describe(user="User to view (leave empty for yourself)")
+        async def profil(interaction: discord.Interaction, user: discord.Member = None) -> None:
+            target = user or interaction.user
+            data = load_data()
+            udata = get_user(data, str(target.id))
+
+            total_cards = len(CARDS)
+            owned_unique = sum(1 for cnt in udata.get("collection", {}).values() if cnt > 0)
+            wins = udata.get("duel_wins", 0)
+            losses = udata.get("duel_losses", 0)
+            total_duels = wins + losses
+            winrate = f"{wins / total_duels * 100:.1f}%" if total_duels > 0 else "N/A"
+
+            embed = discord.Embed(title=f"{target.display_name}'s Profile", color=0x9b59b6)
+            embed.set_thumbnail(url=target.display_avatar.url)
+            embed.add_field(name="💰 Coins", value=f"{udata.get('coins', 0):,}", inline=True)
+            embed.add_field(name="🎴 Collection", value=f"{owned_unique}/{total_cards} unique", inline=True)
+            embed.add_field(name="​", value="​", inline=True)
+            embed.add_field(name="🟡 Legendaries", value=str(udata.get("legendary_count", 0)), inline=True)
+            embed.add_field(name="🔴 Mythics", value=str(udata.get("mythic_count", 0)), inline=True)
+            embed.add_field(name="​", value="​", inline=True)
+            embed.add_field(name="⚔️ Duels", value=f"W: {wins} / L: {losses}", inline=True)
+            embed.add_field(name="📈 Win Rate", value=winrate, inline=True)
+
+            await interaction.response.send_message(embed=embed)
+
         self.tree.copy_global_to(guild=GUILD)
         await self.tree.sync(guild=GUILD)
         log.info("Slash commands synced to guild %s.", GUILD.id)
