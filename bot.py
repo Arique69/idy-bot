@@ -1047,6 +1047,35 @@ class IdyBot(discord.Client):
                 results.append(app_commands.Choice(name=f"{emoji} {name} (x{cnt})", value=name))
             return results[:25]
 
+        @self.tree.command(name="daily", description="Claim your daily coin reward")
+        async def daily(interaction: discord.Interaction) -> None:
+            data = load_data()
+            user = get_user(data, str(interaction.user.id))
+
+            can_claim, remaining = can_claim_daily(user)
+            if not can_claim:
+                hours = int(remaining // 3600)
+                minutes = int((remaining % 3600) // 60)
+                await interaction.response.send_message(
+                    f"⏳ Already claimed today! Come back in **{hours}h {minutes}m**.",
+                    ephemeral=True,
+                )
+                return
+
+            reward = get_daily_reward()
+            user["coins"] += reward
+            user["daily_last"] = time.time()
+            save_data(data)
+
+            embed = discord.Embed(
+                title="📅 Daily Reward!",
+                description=f"You received **{reward} coins**!",
+                color=0xf1c40f,
+            )
+            embed.add_field(name="💰 Balance", value=f"{user['coins']:,} coins", inline=False)
+            embed.set_footer(text="Come back in 24 hours for your next reward!")
+            await interaction.response.send_message(embed=embed)
+
         self.tree.copy_global_to(guild=GUILD)
         await self.tree.sync(guild=GUILD)
         log.info("Slash commands synced to guild %s.", GUILD.id)
