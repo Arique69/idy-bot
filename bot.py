@@ -302,6 +302,7 @@ class ShopConfirmView(discord.ui.View):
         self.user_id = user_id
         self.item_key = item_key
         self.item = SHOP_ITEMS[item_key]
+        self._processing = False
 
     async def _finish(self, interaction: discord.Interaction, embed: discord.Embed) -> None:
         for child in self.children:
@@ -314,6 +315,10 @@ class ShopConfirmView(discord.ui.View):
         if interaction.user.id != self.user_id:
             await interaction.response.send_message("This shop isn't yours!", ephemeral=True)
             return
+        if self._processing:
+            await interaction.response.send_message("Processing...", ephemeral=True)
+            return
+        self._processing = True
 
         data = load_data()
         user = get_user(data, str(self.user_id))
@@ -345,7 +350,7 @@ class ShopConfirmView(discord.ui.View):
             pool = [c for c in CARDS if c["rarity"] == chosen_rarity] or CARDS
             card = random.choice(pool)
         else:
-            pool = [c for c in CARDS if c["rarity"] == self.item["rarity"]]
+            pool = [c for c in CARDS if c["rarity"] == self.item["rarity"]] or CARDS
             card = random.choice(pool)
 
         user["collection"][card["name"]] = user["collection"].get(card["name"], 0) + 1
@@ -407,6 +412,7 @@ class ShopSelectView(discord.ui.View):
         )
         if coins < item["cost"]:
             embed.set_footer(text=f"Not enough coins! Need {item['cost'] - coins:,} more.")
+            self.stop()
             await interaction.response.edit_message(embed=embed, view=ShopSelectView(self.user_id))
             return
         await interaction.response.edit_message(embed=embed, view=ShopConfirmView(self.user_id, item_key))
