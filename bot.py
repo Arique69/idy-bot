@@ -141,6 +141,13 @@ RARITY_NEXT = {
     "legendary": "mythic",
 }
 
+SHOP_ITEMS: dict[str, dict] = {
+    "reroll":    {"label": "🎲 Reroll",              "cost": 100,  "rarity": None},
+    "rare":      {"label": "🔵 Guaranteed Rare",      "cost": 200,  "rarity": "rare"},
+    "epic":      {"label": "🟣 Guaranteed Epic",       "cost": 600,  "rarity": "epic"},
+    "legendary": {"label": "🟡 Guaranteed Legendary",  "cost": 2000, "rarity": "legendary"},
+}
+
 GUILD = discord.Object(id=490175609587105802)
 
 
@@ -289,6 +296,121 @@ class TradeView(discord.ui.View):
             await self.message.edit(content="⏰ Trade expired.", view=self)
 
 
+class ShopConfirmView(discord.ui.View):
+    def __init__(self, user_id: int, item_key: str) -> None:
+        super().__init__(timeout=30)
+        self.user_id = user_id
+        self.item_key = item_key
+        self.item = SHOP_ITEMS[item_key]
+
+    async def _finish(self, interaction: discord.Interaction, embed: discord.Embed) -> None:
+        for child in self.children:
+            child.disabled = True  # type: ignore
+        await interaction.response.edit_message(embed=embed, view=self)
+        self.stop()
+
+    @discord.ui.button(label="✅ Confirm", style=discord.ButtonStyle.green)
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("This shop isn't yours!", ephemeral=True)
+            return
+
+        data = load_data()
+        user = get_user(data, str(self.user_id))
+
+        if user["coins"] < self.item["cost"]:
+            embed = discord.Embed(
+                title="❌ Not enough coins!",
+                description=f"You need **{self.item['cost']:,}** coins but only have **{user['coins']:,}**.",
+                color=0xe74c3c,
+            )
+            await self._finish(interaction, embed)
+            return
+
+        user["coins"] -= self.item["cost"]
+
+        if self.item_key == "reroll":
+            streak = user["common_streak"]
+            is_pity = streak >= 3
+            if is_pity:
+                pity_rarities = [r for r in RARITY_CONFIG if r != "common" and any(c["rarity"] == r for c in CARDS)]
+                weights = [RARITY_CONFIG[r]["weight"] for r in pity_rarities]
+                chosen_rarity = random.choices(pity_rarities, weights=weights, k=1)[0]
+                user["common_streak"] = 0
+            else:
+                rarities = list(RARITY_CONFIG.keys())
+                weights = [RARITY_CONFIG[r]["weight"] for r in rarities]
+                chosen_rarity = random.choices(rarities, weights=weights, k=1)[0]
+                user["common_streak"] = streak + 1 if chosen_rarity == "common" else 0
+            pool = [c for c in CARDS if c["rarity"] == chosen_rarity] or CARDS
+            card = random.choice(pool)
+        else:
+            pool = [c for c in CARDS if c["rarity"] == self.item["rarity"]]
+            card = random.choice(pool)
+
+        user["collection"][card["name"]] = user["collection"].get(card["name"], 0) + 1
+        if card["rarity"] == "legendary":
+            user["legendary_count"] += 1
+        elif card["rarity"] == "mythic":
+            user["mythic_count"] += 1
+
+        save_data(data)
+
+        cfg = RARITY_CONFIG[card["rarity"]]
+        embed = discord.Embed(
+            title=f"🛒 Purchase Complete! {cfg['shout']}",
+            description=f"{cfg['emoji']} **{card['name']}**\n`{cfg['label']}`\n\n💰 Remaining balance: **{user['coins']:,} coins**",
+            color=cfg["color"],
+        )
+        embed.set_image(url=card["url"])
+        await self._finish(interaction, embed)
+
+    @discord.ui.button(label="❌ Cancel", style=discord.ButtonStyle.red)
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("This shop isn't yours!", ephemeral=True)
+            return
+        data = load_data()
+        user = get_user(data, str(self.user_id))
+        embed = _build_shop_embed(user["coins"])
+        await interaction.response.edit_message(embed=embed, view=ShopSelectView(self.user_id))
+        self.stop()
+
+
+class ShopSelectView(discord.ui.View):
+    def __init__(self, user_id: int) -> None:
+        super().__init__(timeout=60)
+        self.user_id = user_id
+
+    @discord.ui.select(
+        placeholder="Choose an item to buy...",
+        options=[
+            discord.SelectOption(label="🎲 Reroll", value="reroll", description="Full fresh gacha pull | 100 coins"),
+            discord.SelectOption(label="🔵 Guaranteed Rare", value="rare", description="Random Rare card | 200 coins"),
+            discord.SelectOption(label="🟣 Guaranteed Epic", value="epic", description="Random Epic card | 600 coins"),
+            discord.SelectOption(label="🟡 Guaranteed Legendary", value="legendary", description="Random Legendary | 2,000 coins"),
+        ],
+    )
+    async def select_item(self, interaction: discord.Interaction, select: discord.ui.Select) -> None:
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("This shop isn't yours!", ephemeral=True)
+            return
+        item_key = select.values[0]
+        item = SHOP_ITEMS[item_key]
+        data = load_data()
+        user = get_user(data, str(self.user_id))
+        coins = user["coins"]
+        embed = discord.Embed(
+            title="🛒 Confirm Purchase",
+            description=f"**{item['label']}**\nCost: **{item['cost']:,} coins**\nYour balance: **{coins:,} coins**",
+            color=0xf1c40f if coins >= item["cost"] else 0xe74c3c,
+        )
+        if coins < item["cost"]:
+            embed.set_footer(text=f"Not enough coins! Need {item['cost'] - coins:,} more.")
+            await interaction.response.edit_message(embed=embed, view=ShopSelectView(self.user_id))
+            return
+        await interaction.response.edit_message(embed=embed, view=ShopConfirmView(self.user_id, item_key))
+
 
 def _build_card_embed(card: dict, is_pity: bool = False) -> discord.Embed:
     rarity = RARITY_CONFIG[card["rarity"]]
@@ -307,6 +429,15 @@ def _build_card_embed(card: dict, is_pity: bool = False) -> discord.Embed:
     if is_pity:
         footer = "🍀 Pity activated! • " + footer
     embed.set_footer(text=footer)
+    return embed
+
+
+def _build_shop_embed(coins: int) -> discord.Embed:
+    embed = discord.Embed(title="🏪 IDY Shop", color=0x3498db)
+    embed.add_field(name="💰 Your Balance", value=f"{coins:,} coins", inline=False)
+    for item in SHOP_ITEMS.values():
+        embed.add_field(name=item["label"], value=f"`{item['cost']:,} coins`", inline=True)
+    embed.set_footer(text="Select an item from the menu below to purchase")
     return embed
 
 
