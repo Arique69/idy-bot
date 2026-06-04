@@ -1095,7 +1095,8 @@ class IdyBot(discord.Client):
             udata = get_user(data, str(target.id))
 
             total_cards = len(CARDS)
-            owned_unique = sum(1 for cnt in udata.get("collection", {}).values() if cnt > 0)
+            card_names = {c["name"] for c in CARDS}
+            owned_unique = sum(1 for name, cnt in udata.get("collection", {}).items() if cnt > 0 and name in card_names)
             wins = udata.get("duel_wins", 0)
             losses = udata.get("duel_losses", 0)
             total_duels = wins + losses
