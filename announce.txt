@@ -1,25 +1,18 @@
-🌀 **ELEMENT SYSTEM IS HERE!**
+💰 **ECONOMY UPDATE IS HERE!**
 
-Every card now has an **element** — and elements affect duel odds!
+Coins have entered the chat. Here's what's new:
 
-8 goofy elements:
-😴 **Sleepy** — too lazy to care about anything
-🗣️ **Loudmouth** — can't stop talking, always drama
-😭 **Emotional** — sensitive on a spiritual level
-😎 **Sigma** — unbothered, grindset, doesn't care about feelings
-⚔️ **Warrior** — PSHT energy, ready to fight anytime
-🍗 **Hungry** — never underestimate a hungry person
-🤙 **Rusdi** — chaotic neutral, unique vibes only
-🌀 **Mystery** — nobody knows, not even themselves
+🪙 **Earn Coins**
+• `/daily` — claim free coins once every 24 hours (50–100 coins)
+• Win a `/duel` — get 20–40 coins for the W
 
-**Matchups (attacker gets +5% odds):**
-😎 Sigma → 😭 Emotional
-😭 Emotional → 🗣️ Loudmouth
-🗣️ Loudmouth → 😴 Sleepy
-😴 Sleepy → ⚔️ Warrior
-⚔️ Warrior → 😎 Sigma & 🍗 Hungry
-🍗 Hungry → 🗣️ Loudmouth, 😭 Emotional & 😴 Sleepy
-🤙 Rusdi → 🌀 Mystery
-🌀 Mystery — 20% chance to dodge any disadvantage (it's a mystery)
+🏪 **Spend Coins — `/toko`**
+• 🎲 Reroll — 100 coins (full gacha pull, pity included)
+• 🔵 Guaranteed Rare — 200 coins
+• 🟣 Guaranteed Epic — 600 coins
+• 🟡 Guaranteed Legendary — 2,000 coins
 
-Element shows on card pull, `/kartu`, and duel. Check your collection now!
+📋 **Check Your Stats — `/profil`**
+See your coin balance, collection progress, legendary/mythic count, and duel record all in one place.
+
+Start grinding those duels. 💸
