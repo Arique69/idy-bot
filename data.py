@@ -30,6 +30,7 @@ def get_user(data: dict, user_id: str) -> dict:
             "duel_losses": 0,
             "duel_draws": 0,
             "coins": 0,
+            "daily_last": 0,
         }
     user = data["users"][user_id]
     if isinstance(user.get("collection"), list):
@@ -41,4 +42,5 @@ def get_user(data: dict, user_id: str) -> dict:
     user.setdefault("duel_losses", 0)
     user.setdefault("duel_draws", 0)
     user.setdefault("coins", 0)
+    user.setdefault("daily_last", 0)
     return user
