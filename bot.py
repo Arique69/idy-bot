@@ -189,6 +189,23 @@ def pull_card_simple() -> dict:
     return random.choice(pool)
 
 
+def get_daily_reward() -> int:
+    return random.randint(50, 100)
+
+
+def get_duel_win_reward() -> int:
+    return random.randint(20, 40)
+
+
+def can_claim_daily(user: dict) -> tuple[bool, float]:
+    now = time.time()
+    last = user.get("daily_last", 0)
+    remaining = 86400 - (now - last)
+    if remaining <= 0:
+        return True, 0.0
+    return False, remaining
+
+
 def get_random_collection_card(user_id: int) -> dict | None:
     data = load_data()
     user = get_user(data, str(user_id))
