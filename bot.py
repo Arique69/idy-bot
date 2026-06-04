@@ -673,6 +673,7 @@ class IdyBot(discord.Client):
             win_chance_a, misteri_dodged = compute_win_chance(card_a, card_b)
             a_wins = random.random() < win_chance_a
 
+            coin_reward = get_duel_win_reward()
             if a_wins:
                 result = f"🏆 **{interaction.user.display_name}** wins!"
                 color = 0x2ecc71
@@ -680,6 +681,7 @@ class IdyBot(discord.Client):
                 loser_card = card_b
                 win_chance_winner = win_chance_a
                 user_a["duel_wins"] = user_a.get("duel_wins", 0) + 1
+                user_a["coins"] = user_a.get("coins", 0) + coin_reward
                 user_b["duel_losses"] = user_b.get("duel_losses", 0) + 1
             else:
                 result = f"🏆 **{lawan.display_name}** wins!"
@@ -688,6 +690,7 @@ class IdyBot(discord.Client):
                 loser_card = card_a
                 win_chance_winner = 1 - win_chance_a
                 user_b["duel_wins"] = user_b.get("duel_wins", 0) + 1
+                user_b["coins"] = user_b.get("coins", 0) + coin_reward
                 user_a["duel_losses"] = user_a.get("duel_losses", 0) + 1
 
             save_data(data)
@@ -716,6 +719,7 @@ class IdyBot(discord.Client):
             embed.add_field(name=lawan.display_name, value=card_field(card_b, cfg_b, pct_b), inline=True)
             embed.add_field(name="🃏 Winner Card", value=f"**{winner_card['name']}**", inline=False)
             embed.add_field(name="💬", value=f"*{finisher}*", inline=False)
+            embed.add_field(name="💰 Coin Reward", value=f"+{coin_reward} coins to winner", inline=False)
             embed.set_image(url=winner_card["url"])
 
             await interaction.response.send_message(embed=embed)
