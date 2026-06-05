@@ -1,18 +1,5 @@
-💰 **ECONOMY UPDATE IS HERE!**
+🕛 **/daily now resets at midnight WIB!**
 
-Coins have entered the chat. Here's what's new:
+No more waiting 24 hours from whenever you last claimed — the reset is now fixed at **00:00 WIB** every day.
 
-🪙 **Earn Coins**
-• `/daily` — claim free coins once every 24 hours (50–100 coins)
-• Win a `/duel` — get 20–40 coins for the W
-
-🏪 **Spend Coins — `/toko`**
-• 🎲 Reroll — 100 coins (full gacha pull, pity included)
-• 🔵 Guaranteed Rare — 200 coins
-• 🟣 Guaranteed Epic — 600 coins
-• 🟡 Guaranteed Legendary — 2,000 coins
-
-📋 **Check Your Stats — `/profil`**
-See your coin balance, collection progress, legendary/mythic count, and duel record all in one place.
-
-Start grinding those duels. 💸
+Claim it once, come back tomorrow night. Simple.

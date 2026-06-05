@@ -7,7 +7,7 @@ import random
 import re
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import aiohttp
 import discord
@@ -205,12 +205,16 @@ def get_duel_win_reward() -> int:
 
 
 def can_claim_daily(user: dict) -> tuple[bool, float]:
-    now = time.time()
-    last = user.get("daily_last", 0)
-    remaining = 86400 - (now - last)
-    if remaining <= 0:
+    now = datetime.now(timezone.utc)
+    noon = now.replace(hour=17, minute=0, second=0, microsecond=0)
+    if now < noon:
+        noon -= timedelta(days=1)
+    last_ts = user.get("daily_last", 0)
+    last_claim = datetime.fromtimestamp(last_ts, tz=timezone.utc)
+    if last_claim < noon:
         return True, 0.0
-    return False, remaining
+    next_noon = noon + timedelta(days=1)
+    return False, (next_noon - now).total_seconds()
 
 
 def get_random_collection_card(user_id: int) -> dict | None:
@@ -1077,7 +1081,7 @@ class IdyBot(discord.Client):
                 color=0xf1c40f,
             )
             embed.add_field(name="💰 Balance", value=f"{user['coins']:,} coins", inline=False)
-            embed.set_footer(text="Come back in 24 hours for your next reward!")
+            embed.set_footer(text="Resets daily at 12:00 AM WIB!")
             await interaction.response.send_message(embed=embed)
 
         @self.tree.command(name="toko", description="Open the IDY shop")
